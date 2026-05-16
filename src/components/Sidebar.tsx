@@ -12,7 +12,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-52 bg-zinc-900 border-r border-zinc-800 flex flex-col py-5 shrink-0">
+    <aside className="hidden md:flex w-52 bg-zinc-900 border-r border-zinc-800 flex-col py-5 shrink-0">
       <div className="px-5 mb-6 text-[15px] font-medium tracking-tight text-white">
         Строеж <span className="text-zinc-500 font-normal">Pro</span>
       </div>

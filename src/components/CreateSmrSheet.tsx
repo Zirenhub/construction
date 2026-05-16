@@ -108,7 +108,7 @@ export default function CreateSmrSheet({
           ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       />
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-md bg-zinc-950 border-l border-zinc-800
+        className={`fixed top-0 right-0 h-full w-full md:max-w-md bg-zinc-950 md:border-l border-zinc-800
         z-50 flex flex-col transition-transform duration-300 ease-in-out
         ${open ? 'translate-x-0' : 'translate-x-full'}`}
       >

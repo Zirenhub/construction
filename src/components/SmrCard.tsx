@@ -108,7 +108,7 @@ export default function SmrCard({ smr, onUpdateAction }: Props) {
       {expanded && (
         <div className="border-t border-zinc-800 px-4 py-4 space-y-4">
           {/* Meta row */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {[
               { label: 'Мярка', value: smr.unit },
               {

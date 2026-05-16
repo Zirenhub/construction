@@ -1,3 +1,4 @@
+import BottomNav from '@/components/BottomNav';
 import Sidebar from '@/components/Sidebar';
 import type { Metadata } from 'next';
 import './globals.css';
@@ -11,9 +12,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="bg">
-      <body className="flex h-screen bg-zinc-950 text-zinc-100">
+      <body className="flex flex-col h-screen bg-zinc-950 text-zinc-100 md:flex-row">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main className="flex-1 overflow-y-auto pb-16 md:pb-0">{children}</main>
+        <BottomNav />
       </body>
     </html>
   );
