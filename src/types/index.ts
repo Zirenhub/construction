@@ -1,9 +1,23 @@
+export type SmrUpdate = {
+  id: string;
+  done: number;
+  note: string;
+  timestamp: string; // ISO string
+};
+
 export type SMR = {
   id: string;
   name: string;
   active: boolean;
-  progress: number; // 0-100
+  progress: number;
   brigade: string;
+  unit: string;
+  quantity: number;
+  done: number;
+  pricePerUnit: number;
+  totalValue: number;
+  note: string; // creation note
+  updates: SmrUpdate[];
 };
 
 export type PodObekt = {
