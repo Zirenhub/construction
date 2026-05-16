@@ -1,0 +1,88 @@
+import { getProject } from '@/lib/data';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+
+export default async function ProjectPage({
+  params,
+}: {
+  params: Promise<{ projectId: string }>;
+}) {
+  const { projectId } = await params;
+  const project = getProject(projectId);
+  if (!project) notFound();
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 px-6 py-5 border-b border-zinc-800">
+        <Link
+          href="/obekti"
+          className="text-zinc-500 hover:text-zinc-300 transition-colors text-sm"
+        >
+          Обекти
+        </Link>
+        <span className="text-zinc-700">/</span>
+        <h1 className="text-lg font-medium text-zinc-100">{project.name}</h1>
+        <span
+          className={`ml-auto text-[11px] font-medium px-2.5 py-0.5 rounded-full ${
+            project.active
+              ? 'bg-green-950 text-green-400'
+              : 'bg-zinc-800 text-zinc-500'
+          }`}
+        >
+          {project.active ? 'Активен' : 'Неактивен'}
+        </span>
+      </div>
+
+      <div className="p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-[11px] font-medium uppercase tracking-widest text-zinc-500">
+            Под обекти
+          </span>
+          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">
+            {project.podObekti.length}
+          </span>
+        </div>
+
+        {project.podObekti.length === 0 ? (
+          <p className="text-zinc-600 text-sm">Няма под обекти.</p>
+        ) : (
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-3">
+            {project.podObekti.map((pod) => {
+              const activeCount = pod.smr.filter((s) => s.active).length;
+              const avgProgress = pod.smr.length
+                ? Math.round(
+                    pod.smr.reduce((acc, s) => acc + s.progress, 0) /
+                      pod.smr.length
+                  )
+                : 0;
+
+              return (
+                <Link
+                  key={pod.id}
+                  href={`/obekti/${project.id}/${pod.id}`}
+                  className="block border border-zinc-800 rounded-xl p-4 bg-zinc-900 hover:border-zinc-600 transition-colors"
+                >
+                  <p className="text-sm font-medium text-zinc-100 mb-3">
+                    {pod.name}
+                  </p>
+
+                  <div className="w-full bg-zinc-800 rounded-full h-1 mb-3">
+                    <div
+                      className="bg-green-500 h-1 rounded-full transition-all"
+                      style={{ width: `${avgProgress}%` }}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs text-zinc-500">
+                    <span>{activeCount} активни СМР</span>
+                    <span>{avgProgress}%</span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
