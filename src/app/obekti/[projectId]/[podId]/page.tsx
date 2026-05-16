@@ -35,16 +35,18 @@ export default function PodObektPage({
     setSmrList((prev) =>
       prev.map((s) => {
         if (s.id !== id) return s;
-        const pct = s.quantity > 0 ? Math.round((done / s.quantity) * 100) : 0;
+        const newDone = Math.min(s.done + done, s.quantity);
+        const pct =
+          s.quantity > 0 ? Math.round((newDone / s.quantity) * 100) : 0;
         const update = {
           id: `u-${Date.now()}`,
-          done,
+          done: newDone,
           note,
           timestamp: new Date().toISOString(),
         };
         return {
           ...s,
-          done,
+          done: newDone,
           progress: pct,
           active: pct < 100,
           updates: [...s.updates, update],

@@ -9,6 +9,7 @@ type Props = {
 };
 
 function formatDate(iso: string) {
+  // proweri dali e taka locale date string
   return new Date(iso).toLocaleDateString('bg-BG', {
     day: '2-digit',
     month: 'short',
@@ -34,8 +35,8 @@ export default function SmrCard({ smr, onUpdateAction }: Props) {
       setUpdateError('Въведете валидно количество');
       return;
     }
-    if (val > smr.quantity) {
-      setUpdateError(`Максимум ${smr.quantity} ${smr.unit}`);
+    if (smr.done + val > smr.quantity) {
+      setUpdateError(`Максимум ${smr.quantity - smr.done} ${smr.unit} остават`);
       return;
     }
     onUpdateAction(smr.id, val, updateNote.trim());
@@ -182,7 +183,7 @@ export default function SmrCard({ smr, onUpdateAction }: Props) {
                   type="number"
                   min="0"
                   max={smr.quantity}
-                  placeholder={`Свършено (${smr.unit})`}
+                  placeholder={`Добавено сега (${smr.unit})`}
                   value={updateDone}
                   onChange={(e) => {
                     setUpdateDone(e.target.value);
