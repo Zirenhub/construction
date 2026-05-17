@@ -1,14 +1,25 @@
 'use client';
 
-import { SMR } from '@/types';
 import { useState } from 'react';
 
 const PRESET_UNITS = ['m', 'm2', 'm3', 'бр', 'кг', 'т', 'л'];
 
+export type SmrFormData = {
+  name: string;
+  unit: string;
+  quantity: number;
+  done: number;
+  active: boolean;
+  brigade: string;
+  pricePerUnit: number;
+  totalValue: number;
+  note: string;
+};
+
 type Props = {
   open: boolean;
   onCloseAction: () => void;
-  onSaveAction: (smr: Omit<SMR, 'id' | 'progress'>) => void;
+  onSaveAction: (smr: SmrFormData) => void;
 };
 
 const empty = {
@@ -92,7 +103,6 @@ export default function CreateSmrSheet({
       pricePerUnit: Number(form.pricePerUnit) || 0,
       totalValue: Number(form.totalValue) || 0,
       note: form.note.trim(),
-      updates: [],
     });
     reset();
     onCloseAction();

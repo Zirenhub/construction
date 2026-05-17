@@ -1,4 +1,5 @@
-import { getProject } from '@/lib/data';
+import CreatePodObektButton from '@/components/CreatePodObektButton';
+import { getProject } from '@/lib/actions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -8,7 +9,7 @@ export default async function ProjectPage({
   params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = await params;
-  const project = getProject(projectId);
+  const project = await getProject(projectId);
   if (!project) notFound();
 
   return (
@@ -33,13 +34,16 @@ export default async function ProjectPage({
       </div>
 
       <div className="p-4 md:p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-[11px] font-medium uppercase tracking-widest text-zinc-500">
-            Под обекти
-          </span>
-          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">
-            {project.podObekti.length}
-          </span>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-medium uppercase tracking-widest text-zinc-500">
+              Под обекти
+            </span>
+            <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">
+              {project.podObekti.length}
+            </span>
+          </div>
+          <CreatePodObektButton projectId={project.id} />
         </div>
 
         {project.podObekti.length === 0 ? (
@@ -50,8 +54,12 @@ export default async function ProjectPage({
               const activeCount = pod.smr.filter((s) => s.active).length;
               const avgProgress = pod.smr.length
                 ? Math.round(
-                    pod.smr.reduce((acc, s) => acc + s.progress, 0) /
-                      pod.smr.length
+                    pod.smr.reduce(
+                      (acc, s) =>
+                        acc +
+                        (s.quantity > 0 ? (s.done / s.quantity) * 100 : 0),
+                      0
+                    ) / pod.smr.length
                   )
                 : 0;
 

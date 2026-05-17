@@ -8,7 +8,7 @@ type Props = {
   onUpdateAction: (id: string, done: number, note: string) => void;
 };
 
-function formatDate(iso: string) {
+function formatDate(iso: string | Date) {
   // proweri dali e taka locale date string
   return new Date(iso).toLocaleDateString('bg-BG', {
     day: '2-digit',
@@ -130,7 +130,6 @@ export default function SmrCard({ smr, onUpdateAction }: Props) {
               </div>
             ))}
           </div>
-
           {/* Creation note */}
           {smr.note && (
             <div className="bg-zinc-950 rounded-lg p-3">
@@ -140,7 +139,6 @@ export default function SmrCard({ smr, onUpdateAction }: Props) {
               <p className="text-xs text-zinc-400">{smr.note}</p>
             </div>
           )}
-
           {/* Update log */}
           {smr.updates.length > 0 && (
             <div>
@@ -159,7 +157,7 @@ export default function SmrCard({ smr, onUpdateAction }: Props) {
                           {u.done} {smr.unit}
                         </span>
                         <span className="text-zinc-600 text-[10px] shrink-0">
-                          {formatDate(u.timestamp)}
+                          {formatDate(u.createdAt)}
                         </span>
                       </div>
                       {u.note && (
@@ -209,6 +207,24 @@ export default function SmrCard({ smr, onUpdateAction }: Props) {
                   text-sm text-zinc-100 placeholder:text-zinc-600
                   focus:outline-none focus:border-zinc-600 transition-colors resize-none"
               />
+              {/* Declare done shortcut */}
+              {smr.done < smr.quantity && (
+                <button
+                  onClick={() => {
+                    const remaining = smr.quantity - smr.done;
+                    onUpdateAction(
+                      smr.id,
+                      remaining,
+                      updateNote.trim() || 'Завършено'
+                    );
+                  }}
+                  className="w-full py-2 text-sm border border-zinc-700 rounded-lg text-zinc-400
+      hover:border-green-700 hover:text-green-400 hover:bg-green-950/30 transition-colors"
+                >
+                  ✓ Декларирай завършено — остават {smr.quantity - smr.done}{' '}
+                  {smr.unit}
+                </button>
+              )}
               <button
                 onClick={handleUpdate}
                 className="w-full py-2 text-sm bg-white text-zinc-950 rounded-lg font-medium
