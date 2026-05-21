@@ -1,7 +1,7 @@
 'use client';
 
 import { createPodObekt } from '@/lib/actions';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 
 export default function CreatePodObektButton({
   projectId,
@@ -10,15 +10,15 @@ export default function CreatePodObektButton({
 }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  async function handleSave() {
+  function handleSave() {
     if (!name.trim()) return;
-    setLoading(true);
-    await createPodObekt({ name: name.trim(), projectId });
-    setName('');
-    setOpen(false);
-    setLoading(false);
+    startTransition(async () => {
+      await createPodObekt({ name: name.trim(), projectId });
+      setName('');
+      setOpen(false);
+    });
   }
 
   function handleClose() {
@@ -89,11 +89,11 @@ export default function CreatePodObektButton({
           </button>
           <button
             onClick={handleSave}
-            disabled={loading}
+            disabled={isPending}
             className="flex-1 py-2.5 text-sm bg-white text-zinc-950 rounded-lg font-medium
-              hover:bg-zinc-200 transition-colors disabled:opacity-50"
+              hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Запазване...' : 'Създай'}
+            {isPending ? 'Запазване...' : 'Създай'}
           </button>
         </div>
       </div>

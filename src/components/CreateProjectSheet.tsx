@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 
 type Props = {
   open: boolean;
   onCloseAction: () => void;
-  onSaveAction: (project: { name: string; location: string }) => void;
+  onSaveAction: (project: { name: string; location: string }) => Promise<void>;
 };
 
 const empty = { name: '', location: '' };
@@ -17,6 +17,7 @@ export default function CreateProjectSheet({
 }: Props) {
   const [form, setForm] = useState(empty);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isPending, startTransition] = useTransition();
 
   function reset() {
     setForm(empty);
@@ -41,9 +42,11 @@ export default function CreateProjectSheet({
       setErrors(e);
       return;
     }
-    onSaveAction({ name: form.name.trim(), location: form.location.trim() });
-    reset();
-    onCloseAction();
+    startTransition(async () => {
+      await onSaveAction({ name: form.name.trim(), location: form.location.trim() });
+      reset();
+      onCloseAction();
+    });
   }
 
   function handleKey(e: React.KeyboardEvent) {
@@ -164,10 +167,11 @@ export default function CreateProjectSheet({
           </button>
           <button
             onClick={handleSave}
+            disabled={isPending}
             className="flex-1 py-2.5 text-sm bg-white text-zinc-950 rounded-lg font-medium
-              hover:bg-zinc-200 transition-colors"
+              hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Създай обект
+            {isPending ? 'Запазване...' : 'Създай обект'}
           </button>
         </div>
       </div>

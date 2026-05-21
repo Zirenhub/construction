@@ -1,19 +1,16 @@
 'use client';
 
 import CreateProjectSheet from '@/components/CreateProjectSheet';
+import { PodObekt, Project, SMR } from '@/generated/prisma/client';
 import { createProject } from '@/lib/actions';
 import Link from 'next/link';
 import { useState } from 'react';
 
-type Project = {
-  id: string;
-  name: string;
-  location: string;
-  active: boolean;
-  podObekti: { id: string; smr: { id: string }[] }[];
+type ProjectWithRelations = Project & {
+  podObekti: (PodObekt & { smr: SMR[] })[];
 };
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project }: { project: ProjectWithRelations }) {
   return (
     <Link
       href={`/obekti/${project.id}`}
@@ -39,7 +36,7 @@ function ProjectCard({ project }: { project: Project }) {
 export default function ObektiClient({
   initialProjects,
 }: {
-  initialProjects: Project[];
+  initialProjects: ProjectWithRelations[];
 }) {
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -48,7 +45,6 @@ export default function ObektiClient({
 
   async function handleCreate(data: { name: string; location: string }) {
     await createProject(data);
-    setSheetOpen(false);
   }
 
   return (
@@ -77,11 +73,17 @@ export default function ObektiClient({
                 {active.length}
               </span>
             </div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {active.map((p) => (
-                <ProjectCard key={p.id} project={p} />
-              ))}
-            </div>
+            {active.length === 0 ? (
+              <p className="text-sm text-zinc-600">
+                Няма активни обекти. Създайте първия.
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {active.map((p) => (
+                  <ProjectCard key={p.id} project={p} />
+                ))}
+              </div>
+            )}
           </div>
 
           <hr className="border-zinc-800" />
@@ -95,11 +97,15 @@ export default function ObektiClient({
                 {inactive.length}
               </span>
             </div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {inactive.map((p) => (
-                <ProjectCard key={p.id} project={p} />
-              ))}
-            </div>
+            {inactive.length === 0 ? (
+              <p className="text-sm text-zinc-600">Няма неактивни обекти.</p>
+            ) : (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {inactive.map((p) => (
+                  <ProjectCard key={p.id} project={p} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

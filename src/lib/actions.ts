@@ -3,11 +3,21 @@
 import { revalidatePath } from 'next/cache';
 import { prisma } from './prisma';
 
+const smrInclude = {
+  updates: { orderBy: { createdAt: 'asc' as const } },
+  notes: { orderBy: { createdAt: 'asc' as const } },
+  brigade: true,
+};
+
 // ── Projects ──────────────────────────────────────────────
 
 export async function getProjects() {
   return prisma.project.findMany({
-    include: { podObekti: { include: { smr: true } } },
+    include: {
+      podObekti: {
+        include: { smr: { include: smrInclude } },
+      },
+    },
     orderBy: { createdAt: 'desc' },
   });
 }
@@ -22,14 +32,15 @@ export async function createProject(data: { name: string; location: string }) {
 export async function getProject(id: string) {
   return prisma.project.findUnique({
     where: { id },
-    include: { podObekti: { include: { smr: true } } },
+    include: {
+      podObekti: {
+        include: { smr: { include: smrInclude } },
+      },
+    },
   });
 }
 
-export async function createPodObekt(data: {
-  name: string;
-  projectId: string;
-}) {
+export async function createPodObekt(data: { name: string; projectId: string }) {
   await prisma.podObekt.create({ data });
   revalidatePath(`/obekti/${data.projectId}`);
 }
@@ -39,10 +50,20 @@ export async function createPodObekt(data: {
 export async function getPodObekt(id: string) {
   return prisma.podObekt.findUnique({
     where: { id },
-    include: {
-      smr: { include: { updates: { orderBy: { createdAt: 'asc' } } } },
-    },
+    include: { smr: { include: smrInclude } },
   });
+}
+
+export async function createSMRNote(data: {
+  smrId: string;
+  podObektId: string;
+  projectId: string;
+  content: string;
+}) {
+  await prisma.sMRNote.create({
+    data: { smrId: data.smrId, content: data.content },
+  });
+  revalidatePath(`/obekti/${data.projectId}/${data.podObektId}`);
 }
 
 export async function createSMR(data: {
@@ -53,8 +74,9 @@ export async function createSMR(data: {
   quantity: number;
   pricePerUnit: number;
   totalValue: number;
-  brigade: string;
+  brigadeId?: string | null;
   note: string;
+  act?: number | null;
 }) {
   const { projectId, ...smrData } = data;
   await prisma.sMR.create({ data: smrData });
@@ -78,11 +100,71 @@ export async function updateSMRProgress(data: {
     data: {
       done: newDone,
       active: !isComplete,
-      updates: {
-        create: { done: newDone, note: data.note },
-      },
+      updates: { create: { done: newDone, note: data.note } },
     },
   });
 
   revalidatePath(`/obekti/${data.projectId}/${data.podObektId}`);
+}
+
+export async function toggleSMRPaid(data: {
+  smrId: string;
+  podObektId: string;
+  projectId: string;
+  paid: boolean;
+}) {
+  await prisma.sMR.update({
+    where: { id: data.smrId },
+    data: { paid: data.paid },
+  });
+  revalidatePath(`/obekti/${data.projectId}/${data.podObektId}`);
+}
+
+// ── Brigades ──────────────────────────────────────────────
+
+export async function getBrigades() {
+  return prisma.brigade.findMany({
+    include: {
+      members: { orderBy: { createdAt: 'asc' } },
+      smr: {
+        where: { active: true },
+        include: {
+          podObekt: { include: { project: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export async function getBrigadesList() {
+  return prisma.brigade.findMany({
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' },
+  });
+}
+
+export async function createBrigade(name: string) {
+  await prisma.brigade.create({ data: { name } });
+  revalidatePath('/brigadi');
+}
+
+export async function deleteBrigade(id: string) {
+  await prisma.brigade.delete({ where: { id } });
+  revalidatePath('/brigadi');
+}
+
+export async function addBrigadeMember(data: {
+  brigadeId: string;
+  name: string;
+  role: string;
+}) {
+  await prisma.brigadeMember.create({ data });
+  revalidatePath('/brigadi');
+}
+
+export async function removeBrigadeMember(id: string) {
+  await prisma.brigadeMember.delete({ where: { id } });
+  revalidatePath('/brigadi');
 }

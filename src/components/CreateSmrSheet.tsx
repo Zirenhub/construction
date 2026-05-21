@@ -1,25 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { SmrFormData } from '@/lib/types';
+import { useState, useTransition } from 'react';
 
 const PRESET_UNITS = ['m', 'm2', 'm3', 'бр', 'кг', 'т', 'л'];
 
-export type SmrFormData = {
-  name: string;
-  unit: string;
-  quantity: number;
-  done: number;
-  active: boolean;
-  brigade: string;
-  pricePerUnit: number;
-  totalValue: number;
-  note: string;
-};
-
 type Props = {
   open: boolean;
+  brigades: { id: string; name: string }[];
   onCloseAction: () => void;
-  onSaveAction: (smr: SmrFormData) => void;
+  onSaveAction: (smr: SmrFormData) => Promise<void>;
 };
 
 const empty = {
@@ -29,18 +19,16 @@ const empty = {
   quantity: '',
   pricePerUnit: '',
   totalValue: '',
-  brigade: '',
+  brigadeId: '',
   note: '',
+  act: '',
 };
 
-export default function CreateSmrSheet({
-  open,
-  onCloseAction,
-  onSaveAction,
-}: Props) {
+export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAction }: Props) {
   const [form, setForm] = useState(empty);
   const [useCustomUnit, setUseCustomUnit] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isPending, startTransition] = useTransition();
 
   function reset() {
     setForm(empty);
@@ -53,33 +41,20 @@ export default function CreateSmrSheet({
     onCloseAction();
   }
 
-  // Auto-calculate total when price or quantity changes
   function handlePriceChange(val: string) {
     const total = Number(val) * Number(form.quantity);
-    setForm({
-      ...form,
-      pricePerUnit: val,
-      totalValue: total > 0 ? String(total) : '',
-    });
+    setForm({ ...form, pricePerUnit: val, totalValue: total > 0 ? String(total) : '' });
   }
 
   function handleQuantityChange(val: string) {
     const total = Number(form.pricePerUnit) * Number(val);
-    setForm({
-      ...form,
-      quantity: val,
-      totalValue: total > 0 ? String(total) : '',
-    });
+    setForm({ ...form, quantity: val, totalValue: total > 0 ? String(total) : '' });
   }
 
   function validate() {
     const e: Record<string, string> = {};
     if (!form.name.trim()) e.name = 'Задължително поле';
-    if (
-      !form.quantity ||
-      isNaN(Number(form.quantity)) ||
-      Number(form.quantity) <= 0
-    )
+    if (!form.quantity || isNaN(Number(form.quantity)) || Number(form.quantity) <= 0)
       e.quantity = 'Въведете валидно количество';
     const unit = useCustomUnit ? form.customUnit.trim() : form.unit;
     if (!unit) e.unit = 'Изберете или въведете мярка';
@@ -88,24 +63,23 @@ export default function CreateSmrSheet({
 
   function handleSave() {
     const e = validate();
-    if (Object.keys(e).length) {
-      setErrors(e);
-      return;
-    }
-
-    onSaveAction({
-      name: form.name.trim(),
-      unit: useCustomUnit ? form.customUnit.trim() : form.unit,
-      quantity: Number(form.quantity),
-      done: 0,
-      active: true,
-      brigade: form.brigade.trim() || '—',
-      pricePerUnit: Number(form.pricePerUnit) || 0,
-      totalValue: Number(form.totalValue) || 0,
-      note: form.note.trim(),
+    if (Object.keys(e).length) { setErrors(e); return; }
+    startTransition(async () => {
+      await onSaveAction({
+        name: form.name.trim(),
+        unit: useCustomUnit ? form.customUnit.trim() : form.unit,
+        quantity: Number(form.quantity),
+        done: 0,
+        active: true,
+        brigadeId: form.brigadeId || null,
+        pricePerUnit: Number(form.pricePerUnit) || 0,
+        totalValue: Number(form.totalValue) || 0,
+        note: form.note.trim(),
+        act: form.act ? Number(form.act) : null,
+      });
+      reset();
+      onCloseAction();
     });
-    reset();
-    onCloseAction();
   }
 
   const activeUnit = useCustomUnit ? form.customUnit : form.unit;
@@ -124,12 +98,7 @@ export default function CreateSmrSheet({
       >
         <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-800">
           <h2 className="text-base font-medium text-zinc-100">Нова СМР</h2>
-          <button
-            onClick={handleClose}
-            className="text-zinc-500 hover:text-zinc-200 transition-colors text-xl leading-none"
-          >
-            ✕
-          </button>
+          <button onClick={handleClose} className="text-zinc-500 hover:text-zinc-200 transition-colors text-xl leading-none">✕</button>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
@@ -147,9 +116,7 @@ export default function CreateSmrSheet({
                 text-sm text-zinc-100 placeholder:text-zinc-600
                 focus:outline-none focus:border-zinc-600 transition-colors"
             />
-            {errors.name && (
-              <p className="text-xs text-red-400 mt-1">{errors.name}</p>
-            )}
+            {errors.name && <p className="text-xs text-red-400 mt-1">{errors.name}</p>}
           </div>
 
           {/* Unit */}
@@ -161,30 +128,22 @@ export default function CreateSmrSheet({
               {PRESET_UNITS.map((u) => (
                 <button
                   key={u}
-                  onClick={() => {
-                    setForm({ ...form, unit: u });
-                    setUseCustomUnit(false);
-                  }}
+                  onClick={() => { setForm({ ...form, unit: u }); setUseCustomUnit(false); }}
                   className={`px-3 py-1.5 text-sm rounded-lg border transition-colors
-                    ${
-                      !useCustomUnit && form.unit === u
-                        ? 'border-zinc-400 text-zinc-100 bg-zinc-800'
-                        : 'border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'
+                    ${!useCustomUnit && form.unit === u
+                      ? 'border-zinc-400 text-zinc-100 bg-zinc-800'
+                      : 'border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'
                     }`}
                 >
                   {u}
                 </button>
               ))}
               <button
-                onClick={() => {
-                  setUseCustomUnit(true);
-                  setForm({ ...form, unit: '' });
-                }}
+                onClick={() => { setUseCustomUnit(true); setForm({ ...form, unit: '' }); }}
                 className={`px-3 py-1.5 text-sm rounded-lg border transition-colors
-                  ${
-                    useCustomUnit
-                      ? 'border-zinc-400 text-zinc-100 bg-zinc-800'
-                      : 'border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'
+                  ${useCustomUnit
+                    ? 'border-zinc-400 text-zinc-100 bg-zinc-800'
+                    : 'border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'
                   }`}
               >
                 друго
@@ -196,17 +155,13 @@ export default function CreateSmrSheet({
                 placeholder="Въведете мярка..."
                 value={form.customUnit}
                 autoFocus
-                onChange={(e) =>
-                  setForm({ ...form, customUnit: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, customUnit: e.target.value })}
                 className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
                   text-sm text-zinc-100 placeholder:text-zinc-600
                   focus:outline-none focus:border-zinc-600 transition-colors"
               />
             )}
-            {errors.unit && (
-              <p className="text-xs text-red-400 mt-1">{errors.unit}</p>
-            )}
+            {errors.unit && <p className="text-xs text-red-400 mt-1">{errors.unit}</p>}
           </div>
 
           {/* Quantity */}
@@ -231,16 +186,12 @@ export default function CreateSmrSheet({
                 </span>
               )}
             </div>
-            {errors.quantity && (
-              <p className="text-xs text-red-400 mt-1">{errors.quantity}</p>
-            )}
+            {errors.quantity && <p className="text-xs text-red-400 mt-1">{errors.quantity}</p>}
           </div>
 
           {/* Price */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
-              Цена
-            </label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Цена</label>
             <div className="grid grid-cols-2 gap-2">
               <div className="relative">
                 <input
@@ -265,33 +216,52 @@ export default function CreateSmrSheet({
                   min="0"
                   placeholder="Обща стойност"
                   value={form.totalValue}
-                  onChange={(e) =>
-                    setForm({ ...form, totalValue: e.target.value })
-                  }
+                  onChange={(e) => setForm({ ...form, totalValue: e.target.value })}
                   className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
                     text-sm text-zinc-100 placeholder:text-zinc-600
                     focus:outline-none focus:border-zinc-600 transition-colors pr-10"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
-                  лв
-                </span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">лв</span>
               </div>
             </div>
-            <p className="text-xs text-zinc-600 mt-1">
-              Общата стойност се изчислява автоматично
-            </p>
+            <p className="text-xs text-zinc-600 mt-1">Общата стойност се изчислява автоматично</p>
           </div>
 
           {/* Brigade */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
-              Бригада
-            </label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Бригада</label>
+            {brigades.length === 0 ? (
+              <p className="text-xs text-zinc-600">
+                Няма създадени бригади.{' '}
+                <a href="/brigadi" className="text-zinc-400 underline underline-offset-2 hover:text-zinc-200">
+                  Създай бригада
+                </a>
+              </p>
+            ) : (
+              <select
+                value={form.brigadeId}
+                onChange={(e) => setForm({ ...form, brigadeId: e.target.value })}
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
+                  text-sm text-zinc-100
+                  focus:outline-none focus:border-zinc-600 transition-colors"
+              >
+                <option value="">— без бригада —</option>
+                {brigades.map((b) => (
+                  <option key={b.id} value={b.id}>{b.name}</option>
+                ))}
+              </select>
+            )}
+          </div>
+
+          {/* Act */}
+          <div>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Акт №</label>
             <input
-              type="text"
-              placeholder="напр. Бригада Иванов"
-              value={form.brigade}
-              onChange={(e) => setForm({ ...form, brigade: e.target.value })}
+              type="number"
+              min="0"
+              placeholder="напр. 3"
+              value={form.act}
+              onChange={(e) => setForm({ ...form, act: e.target.value })}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
                 text-sm text-zinc-100 placeholder:text-zinc-600
                 focus:outline-none focus:border-zinc-600 transition-colors"
@@ -300,9 +270,7 @@ export default function CreateSmrSheet({
 
           {/* Note */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
-              Бележка
-            </label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Бележка</label>
             <textarea
               rows={3}
               placeholder="Допълнителна информация..."
@@ -325,10 +293,11 @@ export default function CreateSmrSheet({
           </button>
           <button
             onClick={handleSave}
+            disabled={isPending}
             className="flex-1 py-2.5 text-sm bg-white text-zinc-950 rounded-lg font-medium
-              hover:bg-zinc-200 transition-colors"
+              hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Създай
+            {isPending ? 'Запазване...' : 'Създай'}
           </button>
         </div>
       </div>

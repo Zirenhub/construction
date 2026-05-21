@@ -1,11 +1,13 @@
-import { SMR } from '@/types';
+import { SMRWithUpdates } from '@/lib/types';
 import SmrCard from './SmrCard';
 
 type Props = {
   title: string;
-  smr: SMR[];
+  smr: SMRWithUpdates[];
   active: boolean;
-  onUpdateAction: (id: string, done: number, note: string) => void;
+  onUpdateAction: (id: string, done: number, note: string) => Promise<void>;
+  onAddNoteAction: (smrId: string, content: string) => Promise<void>;
+  onTogglePaidAction: (smrId: string, paid: boolean) => Promise<void>;
 };
 
 export default function SmrSection({
@@ -13,6 +15,8 @@ export default function SmrSection({
   smr,
   active,
   onUpdateAction,
+  onAddNoteAction,
+  onTogglePaidAction,
 }: Props) {
   return (
     <div>
@@ -33,7 +37,7 @@ export default function SmrSection({
       ) : (
         <div className="flex flex-col gap-2">
           {smr.map((s) => (
-            <SmrCard key={s.id} smr={s} onUpdateAction={onUpdateAction} />
+            <SmrCard key={s.id} smr={s} onUpdateAction={onUpdateAction} onAddNoteAction={onAddNoteAction} onTogglePaidAction={onTogglePaidAction} />
           ))}
         </div>
       )}

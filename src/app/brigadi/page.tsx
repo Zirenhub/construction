@@ -1,3 +1,7 @@
-export default function BrigadiPage() {
-  return <div className="p-6 text-zinc-600">Бригади — очаквайте скоро</div>;
+import BrigadiClient from '@/components/BrigadiClient';
+import { getBrigades } from '@/lib/actions';
+
+export default async function BrigadiPage() {
+  const brigades = await getBrigades();
+  return <BrigadiClient initialBrigades={brigades} />;
 }
