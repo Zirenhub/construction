@@ -14,19 +14,19 @@ function ProjectCard({ project }: { project: ProjectWithRelations }) {
   return (
     <Link
       href={`/obekti/${project.id}`}
-      className={`block border border-zinc-800 rounded-xl p-4 bg-zinc-900 hover:border-zinc-600 transition-colors active:bg-zinc-800
+      className={`block border border-line rounded-xl p-4 bg-surface hover:border-line-3 transition-colors active:bg-lift
         ${!project.active ? 'opacity-50' : ''}`}
     >
       <div className="flex items-center gap-2 mb-1">
         <span
-          className={`w-2 h-2 rounded-full shrink-0 ${project.active ? 'bg-green-500' : 'bg-zinc-600'}`}
+          className={`w-2 h-2 rounded-full shrink-0 ${project.active ? 'bg-green-500' : 'bg-line-3'}`}
         />
-        <span className="text-sm font-medium text-zinc-100 truncate">
+        <span className="text-sm font-medium text-ink truncate">
           {project.name}
         </span>
       </div>
-      <p className="text-xs text-zinc-500 pl-4 mb-2">{project.location}</p>
-      <p className="text-xs text-zinc-600 pl-4">
+      <p className="text-xs text-ink-4 pl-4 mb-2">{project.location}</p>
+      <p className="text-xs text-ink-5 pl-4">
         {project.podObekti.length} под обекта
       </p>
     </Link>
@@ -50,14 +50,14 @@ export default function ObektiClient({
   return (
     <>
       <div>
-        <div className="flex items-center justify-between px-4 py-4 border-b border-zinc-800 md:px-6 md:py-5">
-          <h1 className="text-base font-medium text-zinc-100 md:text-lg">
+        <div className="flex items-center justify-between px-4 py-4 border-b border-line md:px-6 md:py-5">
+          <h1 className="text-base font-medium text-ink md:text-lg">
             Обекти
           </h1>
           <button
             onClick={() => setSheetOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-zinc-700 rounded-lg
-              text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors md:px-3.5 md:text-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-line-2 rounded-lg
+              text-ink-2 hover:bg-lift hover:text-ink transition-colors md:px-3.5 md:text-sm"
           >
             + Нов обект
           </button>
@@ -66,7 +66,7 @@ export default function ObektiClient({
         <div className="p-4 space-y-6 md:p-6 md:space-y-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-[11px] font-medium uppercase tracking-widest text-zinc-500">
+              <span className="text-[11px] font-medium uppercase tracking-widest text-ink-4">
                 Активни
               </span>
               <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-green-950 text-green-400">
@@ -74,7 +74,7 @@ export default function ObektiClient({
               </span>
             </div>
             {active.length === 0 ? (
-              <p className="text-sm text-zinc-600">
+              <p className="text-sm text-ink-5">
                 Няма активни обекти. Създайте първия.
               </p>
             ) : (
@@ -86,19 +86,19 @@ export default function ObektiClient({
             )}
           </div>
 
-          <hr className="border-zinc-800" />
+          <hr className="border-line" />
 
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-[11px] font-medium uppercase tracking-widest text-zinc-500">
+              <span className="text-[11px] font-medium uppercase tracking-widest text-ink-4">
                 Неактивни
               </span>
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-500">
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-lift text-ink-4">
                 {inactive.length}
               </span>
             </div>
             {inactive.length === 0 ? (
-              <p className="text-sm text-zinc-600">Няма неактивни обекти.</p>
+              <p className="text-sm text-ink-5">Няма неактивни обекти.</p>
             ) : (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {inactive.map((p) => (

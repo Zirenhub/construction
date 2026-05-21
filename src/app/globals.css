@@ -1,26 +1,76 @@
 @import 'tailwindcss';
 
+/* Class-based dark mode: applies dark: variant when .dark is on an ancestor */
+@variant dark (&:where(.dark, .dark *));
+
+/* ── Light mode (default) ──────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --canvas:       #ffffff;        /* page background              */
+  --surface:      #fafafa;        /* cards, panels, sidebar       */
+  --well:         #ffffff;        /* inputs sitting on surface    */
+  --lift:         #f4f4f5;        /* hover / elevated items       */
+
+  --line:         #e4e4e7;        /* default borders              */
+  --line-2:       #d4d4d8;        /* strong borders               */
+  --line-3:       #71717a;        /* focus / active borders       */
+
+  --ink:          #18181b;        /* primary text                 */
+  --ink-2:        #3f3f46;        /* secondary text               */
+  --ink-3:        #52525b;        /* muted text                   */
+  --ink-4:        #71717a;        /* subtle text                  */
+  --ink-5:        #a1a1aa;        /* faint text                   */
+  --ink-ghost:    #d4d4d8;        /* decorative / separators      */
+
+  --cta:          #18181b;        /* CTA button background        */
+  --cta-fg:       #ffffff;        /* CTA button text              */
+  --cta-hover:    #3f3f46;        /* CTA button hover background  */
+}
+
+/* ── Dark mode ─────────────────────────────────────────────── */
+.dark {
+  --canvas:       #09090b;        /* zinc-950                     */
+  --surface:      #18181b;        /* zinc-900                     */
+  --well:         #09090b;        /* zinc-950                     */
+  --lift:         #27272a;        /* zinc-800                     */
+
+  --line:         #27272a;        /* zinc-800                     */
+  --line-2:       #3f3f46;        /* zinc-700                     */
+  --line-3:       #52525b;        /* zinc-600                     */
+
+  --ink:          #f4f4f5;        /* zinc-100                     */
+  --ink-2:        #d4d4d8;        /* zinc-300                     */
+  --ink-3:        #a1a1aa;        /* zinc-400                     */
+  --ink-4:        #71717a;        /* zinc-500                     */
+  --ink-5:        #52525b;        /* zinc-600                     */
+  --ink-ghost:    #3f3f46;        /* zinc-700                     */
+
+  --cta:          #ffffff;        /* white button                 */
+  --cta-fg:       #09090b;        /* dark text on white button    */
+  --cta-hover:    #e4e4e7;        /* zinc-200                     */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-canvas:    var(--canvas);
+  --color-surface:   var(--surface);
+  --color-well:      var(--well);
+  --color-lift:      var(--lift);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-line:      var(--line);
+  --color-line-2:    var(--line-2);
+  --color-line-3:    var(--line-3);
+
+  --color-ink:       var(--ink);
+  --color-ink-2:     var(--ink-2);
+  --color-ink-3:     var(--ink-3);
+  --color-ink-4:     var(--ink-4);
+  --color-ink-5:     var(--ink-5);
+  --color-ink-ghost: var(--ink-ghost);
+
+  --color-cta:       var(--cta);
+  --color-cta-fg:    var(--cta-fg);
+  --color-cta-hover: var(--cta-hover);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }

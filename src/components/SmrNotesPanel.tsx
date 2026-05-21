@@ -45,19 +45,19 @@ export default function SmrNotesPanel({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full md:max-w-lg bg-zinc-950 border-t border-zinc-800
+        className="w-full md:max-w-lg bg-canvas border-t border-line
           md:border md:rounded-2xl rounded-t-2xl
           max-h-[75vh] md:max-h-[80vh] flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800 shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-line shrink-0">
           <div className="min-w-0">
-            <p className="text-sm font-medium text-zinc-100">Бележки</p>
-            <p className="text-xs text-zinc-500 truncate mt-0.5">{smrName}</p>
+            <p className="text-sm font-medium text-ink">Бележки</p>
+            <p className="text-xs text-ink-4 truncate mt-0.5">{smrName}</p>
           </div>
           <button
             onClick={onClose}
-            className="text-zinc-500 hover:text-zinc-200 transition-colors text-xl leading-none ml-4 shrink-0"
+            className="text-ink-4 hover:text-ink-2 transition-colors text-xl leading-none ml-4 shrink-0"
           >
             ✕
           </button>
@@ -66,33 +66,33 @@ export default function SmrNotesPanel({
         {/* Notes list */}
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           {notes.length === 0 ? (
-            <p className="text-sm text-zinc-600">Няма добавени бележки.</p>
+            <p className="text-sm text-ink-5">Няма добавени бележки.</p>
           ) : (
             [...notes].reverse().map((note) => (
-              <div key={note.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-3.5 space-y-1.5">
-                <p className="text-sm text-zinc-200 whitespace-pre-wrap">{note.content}</p>
-                <p className="text-[11px] text-zinc-600">{formatDate(note.createdAt)}</p>
+              <div key={note.id} className="bg-surface border border-line rounded-xl p-3.5 space-y-1.5">
+                <p className="text-sm text-ink-2 whitespace-pre-wrap">{note.content}</p>
+                <p className="text-[11px] text-ink-5">{formatDate(note.createdAt)}</p>
               </div>
             ))
           )}
         </div>
 
         {/* Add note */}
-        <div className="px-5 py-4 border-t border-zinc-800 space-y-2.5 shrink-0">
+        <div className="px-5 py-4 border-t border-line space-y-2.5 shrink-0">
           <textarea
             rows={3}
             placeholder="Нова бележка..."
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5
-              text-sm text-zinc-100 placeholder:text-zinc-600
-              focus:outline-none focus:border-zinc-600 transition-colors resize-none"
+            className="w-full bg-surface border border-line rounded-xl px-3.5 py-2.5
+              text-sm text-ink placeholder:text-ink-5
+              focus:outline-none focus:border-line-3 transition-colors resize-none"
           />
           <button
             onClick={handleAdd}
             disabled={isPending || !text.trim()}
-            className="w-full py-2.5 text-sm bg-white text-zinc-950 rounded-xl font-medium
-              hover:bg-zinc-200 transition-colors
+            className="w-full py-2.5 text-sm bg-cta text-cta-fg rounded-xl font-medium
+              hover:bg-cta-hover transition-colors
               disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending ? 'Запазване...' : 'Добави бележка'}

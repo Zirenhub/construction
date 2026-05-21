@@ -64,27 +64,27 @@ export default function PodObektiClient({
   return (
     <>
       {/* Topbar */}
-      <div className="flex items-center gap-2 px-4 py-4 border-b border-zinc-800 md:px-6 md:py-5">
+      <div className="flex items-center gap-2 px-4 py-4 border-b border-line md:px-6 md:py-5">
         <Link
           href="/obekti"
-          className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors shrink-0 hidden sm:inline"
+          className="text-ink-4 hover:text-ink-2 text-sm transition-colors shrink-0 hidden sm:inline"
         >
           Обекти
         </Link>
-        <span className="text-zinc-700 hidden sm:inline">/</span>
+        <span className="text-ink-ghost hidden sm:inline">/</span>
         <Link
           href={`/obekti/${project.id}`}
-          className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors shrink-0"
+          className="text-ink-4 hover:text-ink-2 text-sm transition-colors shrink-0"
         >
           <span className="sm:hidden">← </span>
           {project.name}
         </Link>
-        <span className="text-zinc-700">/</span>
-        <h1 className="text-sm font-medium text-zinc-100 truncate md:text-base">{pod.name}</h1>
+        <span className="text-ink-ghost">/</span>
+        <h1 className="text-sm font-medium text-ink truncate md:text-base">{pod.name}</h1>
         <button
           onClick={() => setSheetOpen(true)}
-          className="ml-auto shrink-0 flex items-center gap-1 px-3 py-1.5 text-xs border border-zinc-700
-            rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors md:gap-1.5 md:px-3.5 md:text-sm"
+          className="ml-auto shrink-0 flex items-center gap-1 px-3 py-1.5 text-xs border border-line-2
+            rounded-lg text-ink-2 hover:bg-lift hover:text-ink transition-colors md:gap-1.5 md:px-3.5 md:text-sm"
         >
           <span>+</span>
           <span className="hidden sm:inline">Нова СМР</span>
@@ -101,7 +101,7 @@ export default function PodObektiClient({
           onAddNoteAction={handleAddNote}
           onTogglePaidAction={handleTogglePaid}
         />
-        <hr className="border-zinc-800" />
+        <hr className="border-line" />
         <SmrSection
           title="Неактивни СМР"
           smr={inactive}

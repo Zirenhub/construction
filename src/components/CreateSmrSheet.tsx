@@ -92,19 +92,19 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
           ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       />
       <div
-        className={`fixed top-0 right-0 h-full w-full md:max-w-md bg-zinc-950 md:border-l border-zinc-800
+        className={`fixed top-0 right-0 h-full w-full md:max-w-md bg-canvas md:border-l border-line
         z-50 flex flex-col transition-transform duration-300 ease-in-out
         ${open ? 'translate-x-0' : 'translate-x-full'}`}
       >
-        <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-800">
-          <h2 className="text-base font-medium text-zinc-100">Нова СМР</h2>
-          <button onClick={handleClose} className="text-zinc-500 hover:text-zinc-200 transition-colors text-xl leading-none">✕</button>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-line">
+          <h2 className="text-base font-medium text-ink">Нова СМР</h2>
+          <button onClick={handleClose} className="text-ink-4 hover:text-ink-2 transition-colors text-xl leading-none">✕</button>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
           {/* Name */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-ink-3 mb-1.5">
               Вид работа <span className="text-red-500">*</span>
             </label>
             <input
@@ -112,16 +112,16 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
               placeholder="напр. Мазилка, Топлоизолация..."
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
-                text-sm text-zinc-100 placeholder:text-zinc-600
-                focus:outline-none focus:border-zinc-600 transition-colors"
+              className="w-full bg-surface border border-line rounded-lg px-3.5 py-2.5
+                text-sm text-ink placeholder:text-ink-5
+                focus:outline-none focus:border-line-3 transition-colors"
             />
             {errors.name && <p className="text-xs text-red-400 mt-1">{errors.name}</p>}
           </div>
 
           {/* Unit */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-ink-3 mb-1.5">
               Мярка <span className="text-red-500">*</span>
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -131,8 +131,8 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
                   onClick={() => { setForm({ ...form, unit: u }); setUseCustomUnit(false); }}
                   className={`px-3 py-1.5 text-sm rounded-lg border transition-colors
                     ${!useCustomUnit && form.unit === u
-                      ? 'border-zinc-400 text-zinc-100 bg-zinc-800'
-                      : 'border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'
+                      ? 'border-line-3 text-ink bg-lift'
+                      : 'border-line text-ink-4 hover:border-line-2 hover:text-ink-2'
                     }`}
                 >
                   {u}
@@ -142,8 +142,8 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
                 onClick={() => { setUseCustomUnit(true); setForm({ ...form, unit: '' }); }}
                 className={`px-3 py-1.5 text-sm rounded-lg border transition-colors
                   ${useCustomUnit
-                    ? 'border-zinc-400 text-zinc-100 bg-zinc-800'
-                    : 'border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'
+                    ? 'border-line-3 text-ink bg-lift'
+                    : 'border-line text-ink-4 hover:border-line-2 hover:text-ink-2'
                   }`}
               >
                 друго
@@ -156,9 +156,9 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
                 value={form.customUnit}
                 autoFocus
                 onChange={(e) => setForm({ ...form, customUnit: e.target.value })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
-                  text-sm text-zinc-100 placeholder:text-zinc-600
-                  focus:outline-none focus:border-zinc-600 transition-colors"
+                className="w-full bg-surface border border-line rounded-lg px-3.5 py-2.5
+                  text-sm text-ink placeholder:text-ink-5
+                  focus:outline-none focus:border-line-3 transition-colors"
               />
             )}
             {errors.unit && <p className="text-xs text-red-400 mt-1">{errors.unit}</p>}
@@ -166,7 +166,7 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
 
           {/* Quantity */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-ink-3 mb-1.5">
               Количество <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -176,12 +176,12 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
                 placeholder="напр. 800"
                 value={form.quantity}
                 onChange={(e) => handleQuantityChange(e.target.value)}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
-                  text-sm text-zinc-100 placeholder:text-zinc-600
-                  focus:outline-none focus:border-zinc-600 transition-colors pr-14"
+                className="w-full bg-surface border border-line rounded-lg px-3.5 py-2.5
+                  text-sm text-ink placeholder:text-ink-5
+                  focus:outline-none focus:border-line-3 transition-colors pr-14"
               />
               {activeUnit && (
-                <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
+                <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-ink-4">
                   {activeUnit}
                 </span>
               )}
@@ -191,7 +191,7 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
 
           {/* Price */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Цена</label>
+            <label className="block text-xs font-medium text-ink-3 mb-1.5">Цена</label>
             <div className="grid grid-cols-2 gap-2">
               <div className="relative">
                 <input
@@ -200,12 +200,12 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
                   placeholder="За единица"
                   value={form.pricePerUnit}
                   onChange={(e) => handlePriceChange(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
-                    text-sm text-zinc-100 placeholder:text-zinc-600
-                    focus:outline-none focus:border-zinc-600 transition-colors pr-12"
+                  className="w-full bg-surface border border-line rounded-lg px-3.5 py-2.5
+                    text-sm text-ink placeholder:text-ink-5
+                    focus:outline-none focus:border-line-3 transition-colors pr-12"
                 />
                 {activeUnit && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-4">
                     лв/{activeUnit}
                   </span>
                 )}
@@ -217,23 +217,23 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
                   placeholder="Обща стойност"
                   value={form.totalValue}
                   onChange={(e) => setForm({ ...form, totalValue: e.target.value })}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
-                    text-sm text-zinc-100 placeholder:text-zinc-600
-                    focus:outline-none focus:border-zinc-600 transition-colors pr-10"
+                  className="w-full bg-surface border border-line rounded-lg px-3.5 py-2.5
+                    text-sm text-ink placeholder:text-ink-5
+                    focus:outline-none focus:border-line-3 transition-colors pr-10"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">лв</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-4">лв</span>
               </div>
             </div>
-            <p className="text-xs text-zinc-600 mt-1">Общата стойност се изчислява автоматично</p>
+            <p className="text-xs text-ink-5 mt-1">Общата стойност се изчислява автоматично</p>
           </div>
 
           {/* Brigade */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Бригада</label>
+            <label className="block text-xs font-medium text-ink-3 mb-1.5">Бригада</label>
             {brigades.length === 0 ? (
-              <p className="text-xs text-zinc-600">
+              <p className="text-xs text-ink-5">
                 Няма създадени бригади.{' '}
-                <a href="/brigadi" className="text-zinc-400 underline underline-offset-2 hover:text-zinc-200">
+                <a href="/brigadi" className="text-ink-3 underline underline-offset-2 hover:text-ink-2">
                   Създай бригада
                 </a>
               </p>
@@ -241,9 +241,9 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
               <select
                 value={form.brigadeId}
                 onChange={(e) => setForm({ ...form, brigadeId: e.target.value })}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
-                  text-sm text-zinc-100
-                  focus:outline-none focus:border-zinc-600 transition-colors"
+                className="w-full bg-surface border border-line rounded-lg px-3.5 py-2.5
+                  text-sm text-ink
+                  focus:outline-none focus:border-line-3 transition-colors"
               >
                 <option value="">— без бригада —</option>
                 {brigades.map((b) => (
@@ -255,47 +255,47 @@ export default function CreateSmrSheet({ open, brigades, onCloseAction, onSaveAc
 
           {/* Act */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Акт №</label>
+            <label className="block text-xs font-medium text-ink-3 mb-1.5">Акт №</label>
             <input
               type="number"
               min="0"
               placeholder="напр. 3"
               value={form.act}
               onChange={(e) => setForm({ ...form, act: e.target.value })}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
-                text-sm text-zinc-100 placeholder:text-zinc-600
-                focus:outline-none focus:border-zinc-600 transition-colors"
+              className="w-full bg-surface border border-line rounded-lg px-3.5 py-2.5
+                text-sm text-ink placeholder:text-ink-5
+                focus:outline-none focus:border-line-3 transition-colors"
             />
           </div>
 
           {/* Note */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Бележка</label>
+            <label className="block text-xs font-medium text-ink-3 mb-1.5">Бележка</label>
             <textarea
               rows={3}
               placeholder="Допълнителна информация..."
               value={form.note}
               onChange={(e) => setForm({ ...form, note: e.target.value })}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
-                text-sm text-zinc-100 placeholder:text-zinc-600
-                focus:outline-none focus:border-zinc-600 transition-colors resize-none"
+              className="w-full bg-surface border border-line rounded-lg px-3.5 py-2.5
+                text-sm text-ink placeholder:text-ink-5
+                focus:outline-none focus:border-line-3 transition-colors resize-none"
             />
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-zinc-800 flex gap-3">
+        <div className="px-6 py-4 border-t border-line flex gap-3">
           <button
             onClick={handleClose}
-            className="flex-1 py-2.5 text-sm border border-zinc-800 rounded-lg text-zinc-400
-              hover:bg-zinc-900 hover:text-zinc-200 transition-colors"
+            className="flex-1 py-2.5 text-sm border border-line rounded-lg text-ink-3
+              hover:bg-surface hover:text-ink-2 transition-colors"
           >
             Отказ
           </button>
           <button
             onClick={handleSave}
             disabled={isPending}
-            className="flex-1 py-2.5 text-sm bg-white text-zinc-950 rounded-lg font-medium
-              hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-2.5 text-sm bg-cta text-cta-fg rounded-lg font-medium
+              hover:bg-cta-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending ? 'Запазване...' : 'Създай'}
           </button>

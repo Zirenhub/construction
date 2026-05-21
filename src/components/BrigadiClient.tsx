@@ -45,16 +45,16 @@ function CreateBrigadeSheet({
           ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       />
       <div
-        className={`fixed top-0 right-0 h-full w-full md:max-w-sm bg-zinc-950 md:border-l border-zinc-800
+        className={`fixed top-0 right-0 h-full w-full md:max-w-sm bg-canvas md:border-l border-line
           z-50 flex flex-col transition-transform duration-300 ease-in-out
           ${open ? 'translate-x-0' : 'translate-x-full'}`}
       >
-        <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-800">
-          <h2 className="text-base font-medium text-zinc-100">Нова бригада</h2>
-          <button onClick={handleClose} className="text-zinc-500 hover:text-zinc-200 transition-colors text-xl leading-none">✕</button>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-line">
+          <h2 className="text-base font-medium text-ink">Нова бригада</h2>
+          <button onClick={handleClose} className="text-ink-4 hover:text-ink-2 transition-colors text-xl leading-none">✕</button>
         </div>
         <div className="flex-1 px-6 py-6">
-          <label className="block text-xs font-medium text-zinc-400 mb-1.5">Наименование</label>
+          <label className="block text-xs font-medium text-ink-3 mb-1.5">Наименование</label>
           <input
             type="text"
             placeholder="напр. Бригада Иванов"
@@ -62,24 +62,24 @@ function CreateBrigadeSheet({
             autoFocus
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2.5
-              text-sm text-zinc-100 placeholder:text-zinc-600
-              focus:outline-none focus:border-zinc-600 transition-colors"
+            className="w-full bg-surface border border-line rounded-lg px-3.5 py-2.5
+              text-sm text-ink placeholder:text-ink-5
+              focus:outline-none focus:border-line-3 transition-colors"
           />
         </div>
-        <div className="px-6 py-4 border-t border-zinc-800 flex gap-3">
+        <div className="px-6 py-4 border-t border-line flex gap-3">
           <button
             onClick={handleClose}
-            className="flex-1 py-2.5 text-sm border border-zinc-800 rounded-lg text-zinc-400
-              hover:bg-zinc-900 hover:text-zinc-200 transition-colors"
+            className="flex-1 py-2.5 text-sm border border-line rounded-lg text-ink-3
+              hover:bg-surface hover:text-ink-2 transition-colors"
           >
             Отказ
           </button>
           <button
             onClick={handleSave}
             disabled={isPending || !name.trim()}
-            className="flex-1 py-2.5 text-sm bg-white text-zinc-950 rounded-lg font-medium
-              hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-2.5 text-sm bg-cta text-cta-fg rounded-lg font-medium
+              hover:bg-cta-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending ? 'Запазване...' : 'Създай'}
           </button>
@@ -109,8 +109,8 @@ function AddMemberForm({ brigadeId, onDone }: { brigadeId: string; onDone: () =>
   }
 
   return (
-    <div className="pt-3 border-t border-zinc-800 space-y-2">
-      <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-600">Нов член</p>
+    <div className="pt-3 border-t border-line space-y-2">
+      <p className="text-[10px] font-medium uppercase tracking-widest text-ink-5">Нов член</p>
       <div className="flex gap-2">
         <input
           type="text"
@@ -119,9 +119,9 @@ function AddMemberForm({ brigadeId, onDone }: { brigadeId: string; onDone: () =>
           autoFocus
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-          className="flex-1 min-w-0 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2
-            text-sm text-zinc-100 placeholder:text-zinc-600
-            focus:outline-none focus:border-zinc-600 transition-colors"
+          className="flex-1 min-w-0 bg-well border border-line rounded-lg px-3 py-2
+            text-sm text-ink placeholder:text-ink-5
+            focus:outline-none focus:border-line-3 transition-colors"
         />
         <input
           type="text"
@@ -129,24 +129,24 @@ function AddMemberForm({ brigadeId, onDone }: { brigadeId: string; onDone: () =>
           value={role}
           onChange={(e) => setRole(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-          className="w-28 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2
-            text-sm text-zinc-100 placeholder:text-zinc-600
-            focus:outline-none focus:border-zinc-600 transition-colors"
+          className="w-28 bg-well border border-line rounded-lg px-3 py-2
+            text-sm text-ink placeholder:text-ink-5
+            focus:outline-none focus:border-line-3 transition-colors"
         />
       </div>
       <div className="flex gap-2">
         <button
           onClick={onDone}
-          className="flex-1 py-2 text-xs border border-zinc-800 rounded-lg text-zinc-500
-            hover:bg-zinc-900 hover:text-zinc-300 transition-colors"
+          className="flex-1 py-2 text-xs border border-line rounded-lg text-ink-4
+            hover:bg-lift hover:text-ink-2 transition-colors"
         >
           Отказ
         </button>
         <button
           onClick={handleAdd}
           disabled={isPending || !name.trim()}
-          className="flex-1 py-2 text-xs bg-white text-zinc-950 rounded-lg font-medium
-            hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 py-2 text-xs bg-cta text-cta-fg rounded-lg font-medium
+            hover:bg-cta-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? 'Запазване...' : 'Добави'}
         </button>
@@ -175,18 +175,18 @@ function BrigadeCard({ brigade }: { brigade: BrigadeWithAll }) {
   }
 
   return (
-    <div className="border border-zinc-800 rounded-xl bg-zinc-900 overflow-hidden">
+    <div className="border border-line rounded-xl bg-surface overflow-hidden">
       {/* Card header */}
       <div className="flex items-start justify-between gap-3 px-4 pt-4 pb-3">
         <div>
-          <p className="text-sm font-medium text-zinc-100">{brigade.name}</p>
-          <p className="text-xs text-zinc-600 mt-0.5">{brigade.members.length} члена</p>
+          <p className="text-sm font-medium text-ink">{brigade.name}</p>
+          <p className="text-xs text-ink-5 mt-0.5">{brigade.members.length} члена</p>
         </div>
         <button
           onClick={handleDelete}
           disabled={deletePending}
           title="Изтрий бригада"
-          className="text-zinc-700 hover:text-red-400 transition-colors shrink-0 disabled:opacity-50 mt-0.5"
+          className="text-ink-ghost hover:text-red-400 transition-colors shrink-0 disabled:opacity-50 mt-0.5"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round"
@@ -199,23 +199,23 @@ function BrigadeCard({ brigade }: { brigade: BrigadeWithAll }) {
         {/* Members */}
         <div className="space-y-1.5">
           {brigade.members.length === 0 && !addingMember ? (
-            <p className="text-xs text-zinc-600">Няма добавени членове.</p>
+            <p className="text-xs text-ink-5">Няма добавени членове.</p>
           ) : (
             brigade.members.map((m) => (
               <div
                 key={m.id}
-                className="flex items-center justify-between gap-2 py-1.5 px-2.5 bg-zinc-950 rounded-lg"
+                className="flex items-center justify-between gap-2 py-1.5 px-2.5 bg-well rounded-lg"
               >
                 <div className="min-w-0">
-                  <span className="text-xs text-zinc-200">{m.name}</span>
+                  <span className="text-xs text-ink-2">{m.name}</span>
                   {m.role && (
-                    <span className="ml-2 text-[10px] text-zinc-500">{m.role}</span>
+                    <span className="ml-2 text-[10px] text-ink-4">{m.role}</span>
                   )}
                 </div>
                 <button
                   onClick={() => handleRemoveMember(m.id)}
                   disabled={removePending}
-                  className="text-zinc-700 hover:text-red-400 transition-colors shrink-0 disabled:opacity-50"
+                  className="text-ink-ghost hover:text-red-400 transition-colors shrink-0 disabled:opacity-50"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -230,7 +230,7 @@ function BrigadeCard({ brigade }: { brigade: BrigadeWithAll }) {
           ) : (
             <button
               onClick={() => setAddingMember(true)}
-              className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-300 transition-colors mt-1"
+              className="flex items-center gap-1.5 text-xs text-ink-5 hover:text-ink-2 transition-colors mt-1"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -242,27 +242,27 @@ function BrigadeCard({ brigade }: { brigade: BrigadeWithAll }) {
 
         {/* Active SMR assignments */}
         {brigade.smr.length > 0 && (
-          <div className="border-t border-zinc-800 pt-3 space-y-1.5">
-            <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 mb-2">
+          <div className="border-t border-line pt-3 space-y-1.5">
+            <p className="text-[10px] font-medium uppercase tracking-widest text-ink-5 mb-2">
               Активни СМР
             </p>
             {brigade.smr.map((s) => (
               <Link
                 key={s.id}
                 href={`/obekti/${s.podObekt.project.id}/${s.podObekt.id}`}
-                className="flex items-start justify-between gap-3 py-2 px-2.5 bg-zinc-950 rounded-lg
-                  hover:bg-zinc-800 transition-colors group"
+                className="flex items-start justify-between gap-3 py-2 px-2.5 bg-well rounded-lg
+                  hover:bg-lift transition-colors group"
               >
                 <div className="min-w-0">
-                  <p className="text-xs text-zinc-200 truncate group-hover:text-zinc-100">{s.name}</p>
-                  <p className="text-[10px] text-zinc-600 mt-0.5">
+                  <p className="text-xs text-ink-2 truncate group-hover:text-ink">{s.name}</p>
+                  <p className="text-[10px] text-ink-5 mt-0.5">
                     {s.podObekt.name}
-                    <span className="mx-1 text-zinc-700">›</span>
+                    <span className="mx-1 text-ink-ghost">›</span>
                     {s.podObekt.project.name}
                   </p>
                 </div>
                 <div className="shrink-0 text-right">
-                  <span className="text-[10px] text-zinc-500 tabular-nums">
+                  <span className="text-[10px] text-ink-4 tabular-nums">
                     {Math.round((s.done / s.quantity) * 100)}%
                   </span>
                 </div>
@@ -283,17 +283,17 @@ export default function BrigadiClient({ initialBrigades }: { initialBrigades: Br
   return (
     <>
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-4 border-b border-zinc-800 md:px-6 md:py-5">
+      <div className="flex items-center justify-between px-4 py-4 border-b border-line md:px-6 md:py-5">
         <div className="flex items-center gap-2">
-          <h1 className="text-base font-medium text-zinc-100 md:text-lg">Бригади</h1>
-          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-500">
+          <h1 className="text-base font-medium text-ink md:text-lg">Бригади</h1>
+          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-lift text-ink-4">
             {initialBrigades.length}
           </span>
         </div>
         <button
           onClick={() => setSheetOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-zinc-700 rounded-lg
-            text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors md:px-3.5 md:text-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-line-2 rounded-lg
+            text-ink-2 hover:bg-lift hover:text-ink transition-colors md:px-3.5 md:text-sm"
         >
           + Нова бригада
         </button>
@@ -303,14 +303,14 @@ export default function BrigadiClient({ initialBrigades }: { initialBrigades: Br
       <div className="p-4 md:p-6">
         {initialBrigades.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <div className="w-12 h-12 rounded-full bg-surface border border-line flex items-center justify-center mb-4">
+              <svg className="w-5 h-5 text-ink-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round"
                   d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
               </svg>
             </div>
-            <p className="text-sm text-zinc-500">Няма създадени бригади.</p>
-            <p className="text-xs text-zinc-700 mt-1">Създайте първата бригада, за да я назначите на СМР.</p>
+            <p className="text-sm text-ink-4">Няма създадени бригади.</p>
+            <p className="text-xs text-ink-5 mt-1">Създайте първата бригада, за да я назначите на СМР.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
