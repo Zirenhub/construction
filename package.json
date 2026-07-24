@@ -14,6 +14,7 @@
     "@wrksz/themes": "^0.9.3",
     "better-auth": "^1.6.11",
     "dotenv": "^17.4.2",
+    "lucide-react": "^1.26.0",
     "next": "16.2.6",
     "prisma": "^7.8.0",
     "react": "19.2.4",
