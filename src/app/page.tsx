@@ -1,4 +1,9 @@
-import { redirect } from 'next/navigation';
+import Calendar from "@/components/Calendar";
+
 export default function Home() {
-  redirect('/obekti');
+  return (
+    <div className="p-6">
+      <Calendar />
+    </div>
+  );
 }
