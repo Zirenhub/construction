@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition } from "react";
 
 type Props = {
   open: boolean;
@@ -8,7 +8,7 @@ type Props = {
   onSaveAction: (project: { name: string; location: string }) => Promise<void>;
 };
 
-const empty = { name: '', location: '' };
+const empty = { name: "", location: "" };
 
 export default function CreateProjectSheet({
   open,
@@ -31,8 +31,8 @@ export default function CreateProjectSheet({
 
   function validate() {
     const e: Record<string, string> = {};
-    if (!form.name.trim()) e.name = 'Задължително поле';
-    if (!form.location.trim()) e.location = 'Задължително поле';
+    if (!form.name.trim()) e.name = "Задължително поле";
+    if (!form.location.trim()) e.location = "Задължително поле";
     return e;
   }
 
@@ -43,15 +43,18 @@ export default function CreateProjectSheet({
       return;
     }
     startTransition(async () => {
-      await onSaveAction({ name: form.name.trim(), location: form.location.trim() });
+      await onSaveAction({
+        name: form.name.trim(),
+        location: form.location.trim(),
+      });
       reset();
       onCloseAction();
     });
   }
 
   function handleKey(e: React.KeyboardEvent) {
-    if (e.key === 'Enter') handleSave();
-    if (e.key === 'Escape') handleClose();
+    if (e.key === "Enter") handleSave();
+    if (e.key === "Escape") handleClose();
   }
 
   return (
@@ -59,14 +62,14 @@ export default function CreateProjectSheet({
       <div
         onClick={handleClose}
         className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-200
-          ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
       />
 
       <div
         onKeyDown={handleKey}
         className={`fixed top-0 right-0 h-full w-full md:max-w-md bg-canvas md:border-l border-line
           z-50 flex flex-col transition-transform duration-300 ease-in-out
-          ${open ? 'translate-x-0' : 'translate-x-full'}`}
+          ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="flex items-center justify-between px-6 py-5 border-b border-line">
           <div>
@@ -86,7 +89,7 @@ export default function CreateProjectSheet({
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
           <div>
             <label className="block text-xs font-medium text-ink-3 mb-1.5">
-              Ime на обекта <span className="text-red-500">*</span>
+              Име на обекта <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -95,12 +98,12 @@ export default function CreateProjectSheet({
               autoFocus
               onChange={(e) => {
                 setForm({ ...form, name: e.target.value });
-                setErrors({ ...errors, name: '' });
+                setErrors({ ...errors, name: "" });
               }}
               className={`w-full bg-surface border rounded-lg px-3.5 py-2.5
                 text-sm text-ink placeholder:text-ink-5
                 focus:outline-none transition-colors
-                ${errors.name ? 'border-red-500/50 focus:border-red-500' : 'border-line focus:border-line-3'}`}
+                ${errors.name ? "border-red-500/50 focus:border-red-500" : "border-line focus:border-line-3"}`}
             />
             {errors.name && (
               <p className="text-xs text-red-400 mt-1">{errors.name}</p>
@@ -117,12 +120,12 @@ export default function CreateProjectSheet({
               value={form.location}
               onChange={(e) => {
                 setForm({ ...form, location: e.target.value });
-                setErrors({ ...errors, location: '' });
+                setErrors({ ...errors, location: "" });
               }}
               className={`w-full bg-surface border rounded-lg px-3.5 py-2.5
                 text-sm text-ink placeholder:text-ink-5
                 focus:outline-none transition-colors
-                ${errors.location ? 'border-red-500/50 focus:border-red-500' : 'border-line focus:border-line-3'}`}
+                ${errors.location ? "border-red-500/50 focus:border-red-500" : "border-line focus:border-line-3"}`}
             />
             {errors.location && (
               <p className="text-xs text-red-400 mt-1">{errors.location}</p>
@@ -135,9 +138,9 @@ export default function CreateProjectSheet({
             </p>
             <ul className="space-y-1">
               {[
-                'Под обекти (фасади, етажи, секции...)',
-                'СМР задачи към всеки под обект',
-                'Бригади и аванси',
+                "Под обекти (фасади, етажи, секции...)",
+                "СМР задачи към всеки под обект",
+                "Бригади и аванси",
               ].map((item) => (
                 <li
                   key={item}
@@ -165,7 +168,7 @@ export default function CreateProjectSheet({
             className="flex-1 py-2.5 text-sm bg-cta text-cta-fg rounded-lg font-medium
               hover:bg-cta-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isPending ? 'Запазване...' : 'Създай обект'}
+            {isPending ? "Запазване..." : "Създай обект"}
           </button>
         </div>
       </div>
