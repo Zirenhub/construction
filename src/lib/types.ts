@@ -1,4 +1,12 @@
-import type { Brigade, BrigadeMember, PodObekt, Project, SMR, SMRNote, SMRUpdate } from '@/generated/prisma/client';
+import type {
+  Brigade,
+  BrigadeMember,
+  PodObekt,
+  Project,
+  SMR,
+  SMRNote,
+  SMRUpdate,
+} from "@/generated/prisma/client";
 
 export type SmrFormData = {
   name: string;
@@ -32,4 +40,8 @@ export type BrigadeWithAll = Brigade & {
   smr: (SMR & {
     podObekt: PodObekt & { project: Project };
   })[];
+};
+
+export type ProjectWithRelations = Project & {
+  podObekti: (PodObekt & { smr: SMR[] })[];
 };

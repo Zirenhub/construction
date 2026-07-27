@@ -1,37 +1,10 @@
-'use client';
+"use client";
 
-import CreateProjectSheet from '@/components/CreateProjectSheet';
-import { PodObekt, Project, SMR } from '@/generated/prisma/client';
-import { createProject } from '@/lib/actions';
-import Link from 'next/link';
-import { useState } from 'react';
-
-type ProjectWithRelations = Project & {
-  podObekti: (PodObekt & { smr: SMR[] })[];
-};
-
-function ProjectCard({ project }: { project: ProjectWithRelations }) {
-  return (
-    <Link
-      href={`/obekti/${project.id}`}
-      className={`block border border-line rounded-xl p-4 bg-surface hover:border-line-3 transition-colors active:bg-lift
-        ${!project.active ? 'opacity-50' : ''}`}
-    >
-      <div className="flex items-center gap-2 mb-1">
-        <span
-          className={`w-2 h-2 rounded-full shrink-0 ${project.active ? 'bg-green-500' : 'bg-line-3'}`}
-        />
-        <span className="text-sm font-medium text-ink truncate">
-          {project.name}
-        </span>
-      </div>
-      <p className="text-xs text-ink-4 pl-4 mb-2">{project.location}</p>
-      <p className="text-xs text-ink-5 pl-4">
-        {project.podObekti.length} под обекта
-      </p>
-    </Link>
-  );
-}
+import CreateProjectSheet from "@/components/CreateProjectSheet";
+import { createProject } from "@/lib/actions";
+import { ProjectWithRelations } from "@/lib/types";
+import { useState } from "react";
+import ProjectCard from "./ProjectCard";
 
 export default function ObektiClient({
   initialProjects,
@@ -51,9 +24,7 @@ export default function ObektiClient({
     <>
       <div>
         <div className="flex items-center justify-between px-4 py-4 border-b border-line md:px-6 md:py-5">
-          <h1 className="text-base font-medium text-ink md:text-lg">
-            Обекти
-          </h1>
+          <h1 className="text-base font-medium text-ink md:text-lg">Обекти</h1>
           <button
             onClick={() => setSheetOpen(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-line-2 rounded-lg
