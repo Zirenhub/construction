@@ -32,7 +32,7 @@ export type TaskFormValues = {
   dueDate: string; // ISO string format for backend consistency
   isAllDay: boolean;
   priority: TaskPriority;
-  projectId: string;
+  projectId: ProjectWithRelations | null;
   subObjectId: string;
   brigadeId: string;
   brigadeMemberId: string;
@@ -45,7 +45,7 @@ const emptyTask: TaskFormValues = {
   dueDate: "",
   isAllDay: false,
   priority: "MEDIUM",
-  projectId: "",
+  projectId: null,
   subObjectId: "",
   brigadeId: "",
   brigadeMemberId: "",
@@ -83,7 +83,7 @@ const priorityStyles: Record<
   },
 };
 
-type TOpenModal = "none" | "selectProject" | "selectBrigade";
+type TOpenModal = "none" | "selectProject" | "selectBrigade" | "selectPodObekt";
 
 export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
   const [form, setForm] = useState<TaskFormValues>(emptyTask);
@@ -138,6 +138,11 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
     const projects = await getProjects();
     setProjects(projects);
     setIsModalLoading(false);
+  };
+
+  const handleSelectProject = (project: ProjectWithRelations) => {
+    setForm((prev) => ({ ...prev, projectId: project }));
+    setOpenModal("none");
   };
 
   return (
@@ -316,7 +321,8 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
               {
                 key: "projectId",
                 icon: Building2,
-                label: form.projectId ? "Избран проект" : "Избери проект",
+                selected: form.projectId,
+                label: form.projectId ? form.projectId.name : "Избери проект",
                 onClick: () => handleGetProjects(),
               },
               {
@@ -345,12 +351,12 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
                 label: form.smrId ? "Избрано СМР" : "Избери СМР",
                 onClick: () => handleGetProjects(),
               },
-            ].map(({ icon: Icon, label, onClick }, idx) => (
+            ].map(({ icon: Icon, label, onClick, selected }, idx) => (
               <button
                 key={idx}
                 onClick={onClick}
                 type="button"
-                className="w-full flex items-center gap-3 rounded-xl border border-line bg-well px-3.5 py-3 text-sm text-ink-2 hover:bg-lift hover:text-ink active:scale-[0.99] transition-all"
+                className={`${selected ? "bg-green-300" : "bg-red-300"} w-full flex items-center gap-3 rounded-xl border border-line px-3.5 py-3 text-sm text-ink-2 hover:bg-lift hover:text-ink active:scale-[0.99] transition-all`}
               >
                 <Icon size={17} className="text-ink-4 shrink-0" />
                 <span>{label}</span>
@@ -377,8 +383,20 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
         }}
         isOpen={openModal === "selectProject"}
       >
-        <SelectProject projects={projects} />
+        <SelectProject
+          projects={projects}
+          handleSelectProject={handleSelectProject}
+        />
       </Modal>
+
+      <Modal
+        isLoading={isModalLoading}
+        title="Избери подобект"
+        onClose={() => {
+          setOpenModal("none");
+        }}
+        isOpen={openModal === "selectPodObekt"}
+      ></Modal>
     </div>
   );
 }
