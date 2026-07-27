@@ -140,6 +140,10 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
     setIsModalLoading(false);
   };
 
+  const handleGetPodObekti = async () => {
+    setOpenModal("selectPodObekt");
+  };
+
   const handleSelectProject = (project: ProjectWithRelations) => {
     setForm((prev) => ({ ...prev, projectId: project }));
     setOpenModal("none");
@@ -329,7 +333,7 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
                 key: "subObjectId",
                 icon: Building2,
                 label: form.subObjectId ? "Избран подобект" : "Избери подобект",
-                onClick: () => handleGetProjects(),
+                onClick: () => handleGetPodObekti(),
               },
               {
                 key: "brigadeId",
@@ -396,7 +400,9 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
           setOpenModal("none");
         }}
         isOpen={openModal === "selectPodObekt"}
-      ></Modal>
+      >
+        <p>test</p>
+      </Modal>
     </div>
   );
 }
