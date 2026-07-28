@@ -27,13 +27,14 @@ export type SMRWithUpdates = SMR & {
   brigade: Brigade | null;
 };
 
-export type PodObektWithSMR = {
+export type TPodObekt = {
   id: string;
   name: string;
   projectId: string;
   createdAt: Date;
-  smr: SMRWithUpdates[];
 };
+
+export type PodObektWithSMR = TPodObekt & { smr: SMRWithUpdates[] };
 
 export type BrigadeWithAll = Brigade & {
   members: BrigadeMember[];

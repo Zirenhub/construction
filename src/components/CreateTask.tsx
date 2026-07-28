@@ -2,41 +2,34 @@
 
 import { useState, useTransition } from "react";
 import { format, parseISO, isValid } from "date-fns";
+import { CalendarDays, ArrowLeftCircleIcon } from "lucide-react";
+import { BrigadeMember } from "@/generated/prisma/client";
+import { getBrigades, getPodObekti, getProjects } from "@/lib/actions";
 import {
-  CalendarDays,
-  Users,
-  Building2,
-  HardHat,
-  ClipboardList,
-  ArrowLeftCircleIcon,
-  Minus,
-  AlertCircle,
-  AlertTriangle,
-  Flame,
-} from "lucide-react";
-import { getProjects } from "@/lib/actions";
-import { ProjectWithRelations } from "@/lib/types";
-import SelectProject from "./SelectProject";
-import Modal from "./Modal";
+  BrigadeWithAll,
+  ProjectWithRelations,
+  SMRWithUpdates,
+  TPodObekt,
+} from "@/lib/types";
 
-type CreateTaskProps = {
-  goBack: () => void;
-  onSaveAction?: (taskData: TaskFormValues) => Promise<void> | void;
-};
-
-export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+import PrioritySelector, { TaskPriority } from "./PrioritySelector";
+import TaskRelationsGrid from "./TaskRelationsGrid";
+import SelectProjectModal from "./SelectProjectModal";
+import SelectPodObektModal from "./SelectPodObektModal";
+import SelectBrigadeModal from "./SelectBrigadeModal";
+import SelectBrigadeMemberModal from "./SelectBrigadeMemberModal";
 
 export type TaskFormValues = {
   title: string;
   description: string;
-  dueDate: string; // ISO string format for backend consistency
+  dueDate: string;
   isAllDay: boolean;
   priority: TaskPriority;
-  projectId: ProjectWithRelations | null;
-  subObjectId: string;
-  brigadeId: string;
-  brigadeMemberId: string;
-  smrId: string;
+  project: ProjectWithRelations | null;
+  podObekt: TPodObekt | null;
+  brigade: BrigadeWithAll | null;
+  brigadeMemberId: BrigadeMember | null;
+  smrId: SMRWithUpdates | null;
 };
 
 const emptyTask: TaskFormValues = {
@@ -45,77 +38,50 @@ const emptyTask: TaskFormValues = {
   dueDate: "",
   isAllDay: false,
   priority: "MEDIUM",
-  projectId: null,
-  subObjectId: "",
-  brigadeId: "",
-  brigadeMemberId: "",
-  smrId: "",
+  project: null,
+  podObekt: null,
+  brigade: null,
+  brigadeMemberId: null,
+  smrId: null,
 };
 
-const priorityStyles: Record<
-  TaskPriority,
-  { selected: string; icon: string; hover: string }
-> = {
-  LOW: {
-    selected:
-      "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-    icon: "text-emerald-500",
-    hover:
-      "hover:bg-emerald-500/5 hover:border-emerald-300 hover:text-emerald-600",
-  },
-  MEDIUM: {
-    selected:
-      "border-amber-400 bg-amber-400/10 text-amber-700 dark:text-amber-300",
-    icon: "text-amber-500",
-    hover: "hover:bg-amber-400/5 hover:border-amber-300 hover:text-amber-600",
-  },
-  HIGH: {
-    selected:
-      "border-orange-500 bg-orange-500/10 text-orange-700 dark:text-orange-300",
-    icon: "text-orange-500",
-    hover:
-      "hover:bg-orange-500/5 hover:border-orange-300 hover:text-orange-600",
-  },
-  URGENT: {
-    selected: "border-red-500 bg-red-500/10 text-red-700 dark:text-red-300",
-    icon: "text-red-500",
-    hover: "hover:bg-red-500/5 hover:border-red-300 hover:text-red-600",
-  },
-};
+type TOpenModal =
+  | "none"
+  | "selectProject"
+  | "selectBrigade"
+  | "selectPodObekt"
+  | "selectBrigadeMember"
+  | "selectSMR";
 
-type TOpenModal = "none" | "selectProject" | "selectBrigade" | "selectPodObekt";
-
-export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
+export default function CreateTask({
+  goBack,
+  onSaveAction,
+}: {
+  goBack: () => void;
+  onSaveAction?: (taskData: TaskFormValues) => Promise<void> | void;
+}) {
   const [form, setForm] = useState<TaskFormValues>(emptyTask);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isPending, startTransition] = useTransition();
 
   const [openModal, setOpenModal] = useState<TOpenModal>("none");
-  const [projects, setProjects] = useState<ProjectWithRelations[]>([]);
   const [isModalLoading, setIsModalLoading] = useState<boolean>(false);
-
-  function validate() {
-    const e: Record<string, string> = {};
-    if (!form.title.trim()) e.title = "Въведете заглавие на задачата";
-    return e;
-  }
+  const [projects, setProjects] = useState<ProjectWithRelations[]>([]);
+  const [podObekti, setPodObekti] = useState<TPodObekt[]>([]);
+  const [brigades, setBrigades] = useState<BrigadeWithAll[]>([]);
 
   function handleSave() {
-    const e = validate();
-    if (Object.keys(e).length) {
-      setErrors(e);
+    if (!form.title.trim()) {
+      setErrors({ title: "Въведете заглавие на задачата" });
       return;
     }
 
     startTransition(async () => {
-      if (onSaveAction) {
-        await onSaveAction(form);
-      }
+      if (onSaveAction) await onSaveAction(form);
       goBack();
     });
   }
 
-  // Quick preset handlers using standard Date objects
   const setQuickDate = (daysAhead: number) => {
     const d = new Date();
     d.setDate(d.getDate() + daysAhead);
@@ -123,34 +89,39 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
     setForm((prev) => ({ ...prev, dueDate: d.toISOString() }));
   };
 
-  // Format ISO string to display safely as dd.MM.yyyy HH:mm to user
   const getDisplayDateText = (isoString: string) => {
     if (!isoString) return "Изберете срок...";
     const date = parseISO(isoString);
-    if (!isValid(date)) return "Изберете срок...";
-    return format(date, "dd.MM.yyyy HH:mm");
+    return isValid(date)
+      ? format(date, "dd.MM.yyyy HH:mm")
+      : "Изберете срок...";
   };
 
-  const handleGetProjects = async () => {
-    setOpenModal("selectProject");
+  const handleFetchData = async <T,>(
+    type: TOpenModal,
+    fetcher: () => Promise<T>,
+    setter: (data: T) => void,
+  ) => {
+    setOpenModal(type);
     setIsModalLoading(true);
-    // check if we have projects dont bother fetching ?
-    const projects = await getProjects();
-    setProjects(projects);
+    const data = await fetcher();
+    setter(data);
     setIsModalLoading(false);
   };
 
-  const handleGetPodObekti = async () => {
-    setOpenModal("selectPodObekt");
-  };
-
-  const handleSelectProject = (project: ProjectWithRelations) => {
-    setForm((prev) => ({ ...prev, projectId: project }));
-    setOpenModal("none");
+  const handleOpenMemberModal = async () => {
+    setOpenModal("selectBrigadeMember");
+    if (brigades.length === 0) {
+      setIsModalLoading(true);
+      const data = await getBrigades();
+      setBrigades(data);
+      setIsModalLoading(false);
+    }
   };
 
   return (
     <div className="w-full max-w-lg">
+      {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={goBack}
@@ -159,16 +130,13 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
         >
           <ArrowLeftCircleIcon size={24} />
         </button>
-
-        <div>
-          <h2 className="text-lg font-semibold text-ink tracking-tight">
-            Създаване на нова задача
-          </h2>
-        </div>
+        <h2 className="text-lg font-semibold text-ink tracking-tight">
+          Създаване на нова задача
+        </h2>
       </div>
 
       <div className="space-y-4">
-        {/* Basic */}
+        {/* Title & Description */}
         <section className="space-y-3">
           <div>
             <input
@@ -178,10 +146,10 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
                 setForm({ ...form, title: e.target.value });
                 if (errors.title) setErrors({ ...errors, title: "" });
               }}
-              className={`w-full rounded-xl bg-well border px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-4 outline-none transition-all ${
+              className={`w-full rounded-xl bg-well border px-3.5 py-2.5 text-sm text-ink outline-none transition-all ${
                 errors.title
                   ? "border-red-500"
-                  : "border-line focus:border-line-3 focus:ring-1 focus:ring-line-3"
+                  : "border-line focus:border-line-3"
               }`}
             />
             {errors.title && (
@@ -194,11 +162,11 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
             rows={3}
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="w-full rounded-xl bg-well border border-line px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-4 resize-none outline-none focus:border-line-3 focus:ring-1 focus:ring-line-3 transition-all"
+            className="w-full rounded-xl bg-well border border-line px-3.5 py-2.5 text-sm text-ink resize-none outline-none focus:border-line-3 transition-all"
           />
         </section>
 
-        {/* Date & Time Section */}
+        {/* Due Date */}
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -213,21 +181,21 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
               <button
                 type="button"
                 onClick={() => setQuickDate(0)}
-                className="px-2 py-0.5 rounded-md bg-well border border-line text-ink-2 hover:bg-lift transition-colors"
+                className="px-2 py-0.5 rounded-md bg-well border border-line text-ink-2 hover:bg-lift"
               >
                 Днес
               </button>
               <button
                 type="button"
                 onClick={() => setQuickDate(1)}
-                className="px-2 py-0.5 rounded-md bg-well border border-line text-ink-2 hover:bg-lift transition-colors"
+                className="px-2 py-0.5 rounded-md bg-well border border-line text-ink-2 hover:bg-lift"
               >
                 Утре
               </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl bg-well border border-line px-3.5 focus-within:border-line-3 focus-within:ring-1 focus-within:ring-line-3 transition-all">
+          <div className="flex items-center gap-2 rounded-xl bg-well border border-line px-3.5 focus-within:border-line-3 transition-all">
             <CalendarDays size={16} className="text-ink-4 shrink-0" />
             <input
               type="datetime-local"
@@ -237,13 +205,14 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
                   : ""
               }
               disabled={form.isAllDay}
-              onChange={(e) => {
-                const val = e.target.value;
+              onChange={(e) =>
                 setForm({
                   ...form,
-                  dueDate: val ? new Date(val).toISOString() : "",
-                });
-              }}
+                  dueDate: e.target.value
+                    ? new Date(e.target.value).toISOString()
+                    : "",
+                })
+              }
               className="w-full py-2.5 bg-transparent text-sm text-ink outline-none cursor-pointer disabled:opacity-50"
             />
           </div>
@@ -258,11 +227,7 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
                   if (!prev.dueDate) return { ...prev, isAllDay };
                   const dateObj = parseISO(prev.dueDate);
                   if (isAllDay) dateObj.setHours(0, 0, 0, 0);
-                  return {
-                    ...prev,
-                    isAllDay,
-                    dueDate: dateObj.toISOString(),
-                  };
+                  return { ...prev, isAllDay, dueDate: dateObj.toISOString() };
                 });
               }}
               className="rounded border-line text-cta focus:ring-cta w-4 h-4 accent-cta"
@@ -271,105 +236,35 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
           </label>
         </section>
 
-        {/* Priority */}
-        <section>
-          <p className="text-sm font-medium text-ink mb-2">Приоритет</p>
+        {/* Priority Selector */}
+        <PrioritySelector
+          value={form.priority}
+          onChange={(priority) => setForm({ ...form, priority })}
+        />
 
-          <div className="grid grid-cols-4 gap-2">
-            {[
-              { key: "LOW" as TaskPriority, label: "Ниска", icon: Minus },
-              {
-                key: "MEDIUM" as TaskPriority,
-                label: "Средна",
-                icon: AlertCircle,
-              },
-              {
-                key: "HIGH" as TaskPriority,
-                label: "Висока",
-                icon: AlertTriangle,
-              },
-              { key: "URGENT" as TaskPriority, label: "Спешна", icon: Flame },
-            ].map(({ key, label, icon: Icon }) => {
-              const isSelected = form.priority === key;
-              const styles = priorityStyles[key];
-
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  title={label}
-                  onClick={() => setForm({ ...form, priority: key })}
-                  className={`cursor-pointer flex flex-col items-center justify-center rounded-xl border p-2 text-xs font-medium transition-all ${
-                    isSelected
-                      ? styles.selected
-                      : `border-line bg-well text-ink-2 ${styles.hover}`
-                  } active:scale-95`}
-                >
-                  <Icon
-                    size={16}
-                    className={isSelected ? styles.icon : "text-ink-4"}
-                  />
-                  <span className="hidden sm:inline mt-1">{label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Relations */}
-        <section className="space-y-3">
-          <p className="text-sm font-medium text-ink">Свързване</p>
-
-          <div className="grid gap-2">
-            {[
-              {
-                key: "projectId",
-                icon: Building2,
-                selected: form.projectId,
-                label: form.projectId ? form.projectId.name : "Избери проект",
-                onClick: () => handleGetProjects(),
-              },
-              {
-                key: "subObjectId",
-                icon: Building2,
-                label: form.subObjectId ? "Избран подобект" : "Избери подобект",
-                onClick: () => handleGetPodObekti(),
-              },
-              {
-                key: "brigadeId",
-                icon: Users,
-                label: form.brigadeId ? "Избрана бригада" : "Избери бригада",
-                onClick: () => handleGetProjects(),
-              },
-              {
-                key: "brigadeMemberId",
-                icon: HardHat,
-                label: form.brigadeMemberId
-                  ? "Избран член"
-                  : "Избери член на бригада",
-                onClick: () => handleGetProjects(),
-              },
-              {
-                key: "smrId",
-                icon: ClipboardList,
-                label: form.smrId ? "Избрано СМР" : "Избери СМР",
-                onClick: () => handleGetProjects(),
-              },
-            ].map(({ icon: Icon, label, onClick, selected }, idx) => (
-              <button
-                key={idx}
-                onClick={onClick}
-                type="button"
-                className={`${selected ? "bg-green-300" : "bg-red-300"} w-full flex items-center gap-3 rounded-xl border border-line px-3.5 py-3 text-sm text-ink-2 hover:bg-lift hover:text-ink active:scale-[0.99] transition-all`}
-              >
-                <Icon size={17} className="text-ink-4 shrink-0" />
-                <span>{label}</span>
-              </button>
-            ))}
-          </div>
-        </section>
+        {/* Relations Grid */}
+        <TaskRelationsGrid
+          form={form}
+          onOpenProjects={() =>
+            handleFetchData("selectProject", getProjects, setProjects)
+          }
+          onOpenPodObekti={() =>
+            handleFetchData("selectPodObekt", getPodObekti, setPodObekti)
+          }
+          onOpenBrigades={() =>
+            handleFetchData("selectBrigade", getBrigades, setBrigades)
+          }
+          onOpenBrigadeMembers={handleOpenMemberModal}
+          onRemove={(key) =>
+            setForm((prev) => ({
+              ...prev,
+              [key]: null,
+            }))
+          }
+        />
       </div>
 
+      {/* Save Button */}
       <button
         type="button"
         disabled={isPending}
@@ -379,30 +274,62 @@ export default function CreateTask({ goBack, onSaveAction }: CreateTaskProps) {
         {isPending ? "Създаване..." : "Създай задача"}
       </button>
 
-      <Modal
-        isLoading={isModalLoading}
-        title="Избери проект"
-        onClose={() => {
-          setOpenModal("none");
-        }}
+      {/* Selection Modals */}
+      <SelectProjectModal
         isOpen={openModal === "selectProject"}
-      >
-        <SelectProject
-          projects={projects}
-          handleSelectProject={handleSelectProject}
-        />
-      </Modal>
-
-      <Modal
         isLoading={isModalLoading}
-        title="Избери подобект"
-        onClose={() => {
+        projects={projects}
+        selectedProjectId={form.project?.id}
+        onClose={() => setOpenModal("none")}
+        onSelect={(project) => {
+          setForm((prev) => ({ ...prev, project }));
           setOpenModal("none");
         }}
+      />
+
+      <SelectPodObektModal
         isOpen={openModal === "selectPodObekt"}
-      >
-        <p>test</p>
-      </Modal>
+        isLoading={isModalLoading}
+        podObekti={podObekti}
+        selectedPodObektId={form.podObekt?.id}
+        selectedProject={form.project}
+        onClose={() => setOpenModal("none")}
+        onSelect={(podObekt) => {
+          setForm((prev) => ({ ...prev, podObekt }));
+          setOpenModal("none");
+        }}
+      />
+
+      <SelectBrigadeModal
+        isOpen={openModal === "selectBrigade"}
+        isLoading={isModalLoading}
+        brigades={brigades}
+        selectedBrigadeId={form.brigade?.id}
+        selectedProject={form.project}
+        selectedPodObekt={form.podObekt}
+        onClose={() => setOpenModal("none")}
+        onSelect={(brigade) => {
+          setForm((prev) => ({ ...prev, brigade }));
+          setOpenModal("none");
+        }}
+      />
+
+      <SelectBrigadeMemberModal
+        isOpen={openModal === "selectBrigadeMember"}
+        isLoading={isModalLoading}
+        brigades={brigades}
+        selectedMemberId={form.brigadeMemberId?.id}
+        selectedBrigade={form.brigade}
+        onClose={() => setOpenModal("none")}
+        onSelect={(member, parentBrigade) => {
+          setForm((prev) => ({
+            ...prev,
+            brigadeMemberId: member,
+            brigade: prev.brigade || parentBrigade,
+          }));
+          setOpenModal("none");
+        }}
+      />
     </div>
   );
 }

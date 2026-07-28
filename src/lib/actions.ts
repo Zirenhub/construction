@@ -1,11 +1,11 @@
-'use server';
+"use server";
 
-import { revalidatePath } from 'next/cache';
-import { prisma } from './prisma';
+import { revalidatePath } from "next/cache";
+import { prisma } from "./prisma";
 
 const smrInclude = {
-  updates: { orderBy: { createdAt: 'asc' as const } },
-  notes: { orderBy: { createdAt: 'asc' as const } },
+  updates: { orderBy: { createdAt: "asc" as const } },
+  notes: { orderBy: { createdAt: "asc" as const } },
   brigade: true,
 };
 
@@ -18,13 +18,13 @@ export async function getProjects() {
         include: { smr: { include: smrInclude } },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 }
 
 export async function createProject(data: { name: string; location: string }) {
   await prisma.project.create({ data });
-  revalidatePath('/obekti');
+  revalidatePath("/obekti");
 }
 
 // ── Pod Obekti ────────────────────────────────────────────
@@ -40,7 +40,10 @@ export async function getProject(id: string) {
   });
 }
 
-export async function createPodObekt(data: { name: string; projectId: string }) {
+export async function createPodObekt(data: {
+  name: string;
+  projectId: string;
+}) {
   await prisma.podObekt.create({ data });
   revalidatePath(`/obekti/${data.projectId}`);
 }
@@ -52,6 +55,10 @@ export async function getPodObekt(id: string) {
     where: { id },
     include: { smr: { include: smrInclude } },
   });
+}
+
+export async function getPodObekti() {
+  return prisma.podObekt.findMany({});
 }
 
 export async function createSMRNote(data: {
@@ -125,34 +132,34 @@ export async function toggleSMRPaid(data: {
 export async function getBrigades() {
   return prisma.brigade.findMany({
     include: {
-      members: { orderBy: { createdAt: 'asc' } },
+      members: { orderBy: { createdAt: "asc" } },
       smr: {
         where: { active: true },
         include: {
           podObekt: { include: { project: true } },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 }
 
 export async function getBrigadesList() {
   return prisma.brigade.findMany({
     select: { id: true, name: true },
-    orderBy: { name: 'asc' },
+    orderBy: { name: "asc" },
   });
 }
 
 export async function createBrigade(name: string) {
   await prisma.brigade.create({ data: { name } });
-  revalidatePath('/brigadi');
+  revalidatePath("/brigadi");
 }
 
 export async function deleteBrigade(id: string) {
   await prisma.brigade.delete({ where: { id } });
-  revalidatePath('/brigadi');
+  revalidatePath("/brigadi");
 }
 
 export async function addBrigadeMember(data: {
@@ -161,10 +168,10 @@ export async function addBrigadeMember(data: {
   role: string;
 }) {
   await prisma.brigadeMember.create({ data });
-  revalidatePath('/brigadi');
+  revalidatePath("/brigadi");
 }
 
 export async function removeBrigadeMember(id: string) {
   await prisma.brigadeMember.delete({ where: { id } });
-  revalidatePath('/brigadi');
+  revalidatePath("/brigadi");
 }
