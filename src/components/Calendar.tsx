@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 
 export default function Calendar() {
+  const tasks = useState([]);
+
   const today = new Date();
 
   const [viewDate, setViewDate] = useState<Date>(new Date());
@@ -31,6 +33,7 @@ export default function Calendar() {
   // Days in current month
   const getDaysInMonth = (y: number, m: number) =>
     new Date(y, m + 1, 0).getDate();
+
   // Day of week the 1st of the month falls on (0 = Sunday, 6 = Saturday)
   const getFirstDayOfMonth = (y: number, m: number) =>
     new Date(y, m, 1).getDay();
@@ -48,11 +51,11 @@ export default function Calendar() {
   };
 
   const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setViewDate(new Date(year, parseInt(e.target.value), 1));
+    setViewDate(new Date(year, parseInt(e.target.value, 10), 1));
   };
 
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setViewDate(new Date(parseInt(e.target.value), month, 1));
+    setViewDate(new Date(parseInt(e.target.value, 10), month, 1));
   };
 
   const handleReset = () => {
@@ -75,30 +78,12 @@ export default function Calendar() {
   const yearOptions = Array.from({ length: 21 }, (_, i) => year - 10 + i);
 
   return (
-    <div
-      className="
-      w-full max-w-sm mx-auto
-      bg-surface/90
-      backdrop-blur-md
-      border border-line
-      rounded-2xl
-      p-5
-      shadow-xl shadow-black/5
-      transition-all
-    "
-    >
+    <div className="w-full max-w-sm mx-auto bg-surface/90 backdrop-blur-md border border-line rounded-2xl p-5 shadow-xl shadow-black/5 transition-all">
       {/* Header Controls */}
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={handlePrevMonth}
-          className="
-          p-1.5
-          rounded-lg
-          text-ink-4
-          hover:text-ink
-          hover:bg-lift
-          transition-colors
-        "
+          className="p-1.5 rounded-lg text-ink-4 hover:text-ink hover:bg-lift transition-colors"
           aria-label="Previous Month"
         >
           &#x276E;
@@ -109,18 +94,7 @@ export default function Calendar() {
           <select
             value={month}
             onChange={handleMonthChange}
-            className="
-            bg-transparent
-            text-sm
-            font-semibold
-            text-ink
-            cursor-pointer
-            focus:outline-none
-            hover:bg-lift
-            rounded-md
-            p-1
-            transition-colors
-          "
+            className="bg-transparent text-sm font-semibold text-ink cursor-pointer focus:outline-none hover:bg-lift rounded-md p-1 transition-colors"
           >
             {months.map((m, index) => (
               <option key={m} value={index}>
@@ -133,18 +107,7 @@ export default function Calendar() {
           <select
             value={year}
             onChange={handleYearChange}
-            className="
-            bg-transparent
-            text-sm
-            font-semibold
-            text-ink-3
-            cursor-pointer
-            focus:outline-none
-            hover:bg-lift
-            rounded-md
-            p-1
-            transition-colors
-          "
+            className="bg-transparent text-sm font-semibold text-ink-3 cursor-pointer focus:outline-none hover:bg-lift rounded-md p-1 transition-colors"
           >
             {yearOptions.map((y) => (
               <option key={y} value={y}>
@@ -156,14 +119,7 @@ export default function Calendar() {
 
         <button
           onClick={handleNextMonth}
-          className="
-          p-1.5
-          rounded-lg
-          text-ink-4
-          hover:text-ink
-          hover:bg-lift
-          transition-colors
-        "
+          className="p-1.5 rounded-lg text-ink-4 hover:text-ink hover:bg-lift transition-colors"
           aria-label="Next Month"
         >
           &#x276F;
@@ -173,14 +129,7 @@ export default function Calendar() {
       {/* Weekday Labels */}
       <div className="grid grid-cols-7 text-center mb-2">
         {weekDays.map((day) => (
-          <span
-            key={day}
-            className="
-            text-xs
-            font-medium
-            text-ink-5
-          "
-          >
+          <span key={day} className="text-xs font-medium text-ink-5">
             {day}
           </span>
         ))}
@@ -194,57 +143,27 @@ export default function Calendar() {
 
         {Array.from({ length: daysInMonth }, (_, index) => {
           const dayNumber = index + 1;
-
           const currentIsToday = isToday(dayNumber);
           const currentIsSelected = isSelected(dayNumber);
+
+          let buttonStyle = "text-ink-2 hover:bg-lift";
+
+          if (currentIsSelected) {
+            buttonStyle = "bg-cta text-cta-fg shadow-md";
+          } else if (currentIsToday) {
+            buttonStyle = "bg-lift text-ink font-bold border border-line-2";
+          }
 
           return (
             <button
               key={dayNumber}
               onClick={() => setSelectedDate(new Date(year, month, dayNumber))}
-              className={`
-              h-9 w-9 mx-auto
-              flex items-center justify-center
-              rounded-full
-              text-sm
-              font-medium
-              transition-all
-              relative
-              hover:scale-150
-              ${
-                currentIsSelected
-                  ? `
-                    bg-cta
-                    text-cta-fg
-                    shadow-md
-                  `
-                  : currentIsToday
-                    ? `
-                      bg-lift
-                      text-ink
-                      font-bold
-                      border border-line-2
-                    `
-                    : `
-                      text-ink-2
-                      hover:bg-lift
-                    `
-              }
-            `}
+              className={`h-9 w-9 mx-auto flex items-center justify-center rounded-full text-sm font-medium transition-all relative hover:scale-150 ${buttonStyle}`}
             >
               {dayNumber}
 
               {currentIsToday && !currentIsSelected && (
-                <span
-                  className="
-                  absolute
-                  bottom-1
-                  w-1
-                  h-1
-                  bg-ink
-                  rounded-full
-                "
-                />
+                <span className="absolute bottom-1 w-1 h-1 bg-ink rounded-full" />
               )}
             </button>
           );
@@ -253,17 +172,7 @@ export default function Calendar() {
 
       <button
         onClick={handleReset}
-        className="
-        mt-4
-        text-sm
-        text-ink-4
-        hover:text-ink
-        hover:bg-lift
-        cursor-pointer
-        p-3
-        rounded-lg
-        transition-all
-      "
+        className="mt-4 w-full text-sm text-ink-4 hover:text-ink hover:bg-lift cursor-pointer p-3 rounded-lg transition-all"
       >
         Reset
       </button>

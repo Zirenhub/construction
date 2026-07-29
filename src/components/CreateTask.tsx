@@ -3,36 +3,24 @@
 import { useState, useTransition } from "react";
 import { format, parseISO, isValid } from "date-fns";
 import { CalendarDays, ArrowLeftCircleIcon } from "lucide-react";
-import { BrigadeMember } from "@/generated/prisma/client";
-import { getBrigades, getPodObekti, getProjects } from "@/lib/actions";
+import { getBrigades, getPodObekti, getProjects, getSMRs } from "@/lib/actions";
 import {
   BrigadeWithAll,
+  CreateTaskData,
   ProjectWithRelations,
-  SMRWithUpdates,
+  SMRWithAll,
   TPodObekt,
 } from "@/lib/types";
 
-import PrioritySelector, { TaskPriority } from "./PrioritySelector";
+import PrioritySelector from "./PrioritySelector";
 import TaskRelationsGrid from "./TaskRelationsGrid";
 import SelectProjectModal from "./SelectProjectModal";
 import SelectPodObektModal from "./SelectPodObektModal";
 import SelectBrigadeModal from "./SelectBrigadeModal";
 import SelectBrigadeMemberModal from "./SelectBrigadeMemberModal";
+import SelectSMRModal from "./SelectSMRModal";
 
-export type TaskFormValues = {
-  title: string;
-  description: string;
-  dueDate: string;
-  isAllDay: boolean;
-  priority: TaskPriority;
-  project: ProjectWithRelations | null;
-  podObekt: TPodObekt | null;
-  brigade: BrigadeWithAll | null;
-  brigadeMemberId: BrigadeMember | null;
-  smrId: SMRWithUpdates | null;
-};
-
-const emptyTask: TaskFormValues = {
+const emptyTask: CreateTaskData = {
   title: "",
   description: "",
   dueDate: "",
@@ -42,7 +30,7 @@ const emptyTask: TaskFormValues = {
   podObekt: null,
   brigade: null,
   brigadeMemberId: null,
-  smrId: null,
+  smr: null,
 };
 
 type TOpenModal =
@@ -58,9 +46,9 @@ export default function CreateTask({
   onSaveAction,
 }: {
   goBack: () => void;
-  onSaveAction?: (taskData: TaskFormValues) => Promise<void> | void;
+  onSaveAction?: (taskData: CreateTaskData) => Promise<void> | void;
 }) {
-  const [form, setForm] = useState<TaskFormValues>(emptyTask);
+  const [form, setForm] = useState<CreateTaskData>(emptyTask);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isPending, startTransition] = useTransition();
 
@@ -69,6 +57,7 @@ export default function CreateTask({
   const [projects, setProjects] = useState<ProjectWithRelations[]>([]);
   const [podObekti, setPodObekti] = useState<TPodObekt[]>([]);
   const [brigades, setBrigades] = useState<BrigadeWithAll[]>([]);
+  const [smrs, setSmrs] = useState<SMRWithAll[]>([]);
 
   function handleSave() {
     if (!form.title.trim()) {
@@ -255,6 +244,7 @@ export default function CreateTask({
             handleFetchData("selectBrigade", getBrigades, setBrigades)
           }
           onOpenBrigadeMembers={handleOpenMemberModal}
+          onOpenSMR={() => handleFetchData("selectSMR", getSMRs, setSmrs)}
           onRemove={(key) =>
             setForm((prev) => ({
               ...prev,
@@ -329,6 +319,21 @@ export default function CreateTask({
           }));
           setOpenModal("none");
         }}
+      />
+
+      <SelectSMRModal
+        isOpen={openModal === "selectSMR"}
+        isLoading={isModalLoading}
+        smrs={smrs}
+        selectedSmr={form.smr}
+        onSelect={(smr) => {
+          setForm((prev) => ({
+            ...prev,
+            smr,
+          }));
+          setOpenModal("none");
+        }}
+        onClose={() => setOpenModal("none")}
       />
     </div>
   );

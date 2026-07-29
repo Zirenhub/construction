@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Plus, CheckSquare } from "lucide-react";
 import CreateTask from "./CreateTask";
+import { CreateTaskData } from "@/lib/types";
+import { createTask } from "@/lib/actions";
 
 type ActiveView = "layout" | "tasks" | "create" | "none";
 type LayoutProps = {
@@ -95,6 +97,10 @@ export function Tasks() {
     setView("tasks");
   };
 
+  const handleSaveAction = async (data: CreateTaskData) => {
+    await createTask(data);
+  };
+
   return (
     <div className="z-40 fixed bottom-18 right-4 md:bottom-3">
       {/* Floating button */}
@@ -130,7 +136,12 @@ export function Tasks() {
           {view === "layout" && (
             <InitialLayout openTasks={openTasks} openCreate={openCreate} />
           )}
-          {view === "create" && <CreateTask goBack={() => setView("layout")} />}
+          {view === "create" && (
+            <CreateTask
+              goBack={() => setView("layout")}
+              onSaveAction={(data) => handleSaveAction(data)}
+            />
+          )}
         </div>
       )}
     </div>

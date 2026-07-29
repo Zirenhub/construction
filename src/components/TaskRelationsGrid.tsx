@@ -54,11 +54,11 @@ export default function TaskRelationsGrid({
       onClick: onOpenBrigadeMembers,
     },
     {
-      key: "smrId" as keyof TaskFormValues,
+      key: "smr" as keyof TaskFormValues,
       icon: ClipboardList,
-      selected: form.smrId,
-      label: form.smrId ? form.smrId.name : "Избери СМР",
-      onClick: onOpenSMR || onOpenProjects,
+      selected: form.smr,
+      label: form.smr ? form.smr.name : "Избери СМР",
+      onClick: onOpenSMR,
     },
   ];
 

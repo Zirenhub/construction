@@ -27,6 +27,13 @@ export type SMRWithUpdates = SMR & {
   brigade: Brigade | null;
 };
 
+export type SMRWithAll = SMR & {
+  updates: SMRUpdate[];
+  notes: SMRNote[];
+  brigade: Brigade | null;
+  podObekt: PodObekt & { project: Project };
+};
+
 export type TPodObekt = {
   id: string;
   name: string;
@@ -45,4 +52,19 @@ export type BrigadeWithAll = Brigade & {
 
 export type ProjectWithRelations = Project & {
   podObekti: (PodObekt & { smr: SMR[] })[];
+};
+
+export type CreateTaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+
+export type CreateTaskData = {
+  title: string;
+  description: string;
+  dueDate: string;
+  isAllDay: boolean;
+  priority: CreateTaskPriority;
+  project: ProjectWithRelations | null;
+  podObekt: TPodObekt | null;
+  brigade: BrigadeWithAll | null;
+  brigadeMemberId: BrigadeMember | null;
+  smr: SMRWithAll | null;
 };

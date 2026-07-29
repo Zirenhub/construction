@@ -5,9 +5,9 @@ import { MessageSquare, ChevronDown } from "lucide-react";
 type Props = {
   name: string;
   brigadeName?: string;
-  pct: number;
+  pct?: number;
   notesCount: number;
-  expanded: boolean;
+  expanded?: boolean;
   onOpenNotes: (e: React.MouseEvent) => void;
 };
 

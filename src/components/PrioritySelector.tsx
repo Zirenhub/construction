@@ -1,16 +1,15 @@
 "use client";
 
+import { CreateTaskPriority } from "@/lib/types";
 import { Minus, AlertCircle, AlertTriangle, Flame } from "lucide-react";
 
-export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
-
 interface PrioritySelectorProps {
-  value: TaskPriority;
-  onChange: (priority: TaskPriority) => void;
+  value: CreateTaskPriority;
+  onChange: (priority: CreateTaskPriority) => void;
 }
 
 const priorityStyles: Record<
-  TaskPriority,
+  CreateTaskPriority,
   { selected: string; icon: string; hover: string }
 > = {
   LOW: {
@@ -41,10 +40,10 @@ const priorityStyles: Record<
 };
 
 const priorities = [
-  { key: "LOW" as TaskPriority, label: "Ниска", icon: Minus },
-  { key: "MEDIUM" as TaskPriority, label: "Средна", icon: AlertCircle },
-  { key: "HIGH" as TaskPriority, label: "Висока", icon: AlertTriangle },
-  { key: "URGENT" as TaskPriority, label: "Спешна", icon: Flame },
+  { key: "LOW" as CreateTaskPriority, label: "Ниска", icon: Minus },
+  { key: "MEDIUM" as CreateTaskPriority, label: "Средна", icon: AlertCircle },
+  { key: "HIGH" as CreateTaskPriority, label: "Висока", icon: AlertTriangle },
+  { key: "URGENT" as CreateTaskPriority, label: "Спешна", icon: Flame },
 ];
 
 export default function PrioritySelector({

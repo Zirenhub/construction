@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "./prisma";
+import { CreateTaskData } from "./types";
 
 const smrInclude = {
   updates: { orderBy: { createdAt: "asc" as const } },
@@ -90,6 +91,12 @@ export async function createSMR(data: {
   revalidatePath(`/obekti/${projectId}/${data.podObektId}`);
 }
 
+export async function getSMRs() {
+  return prisma.sMR.findMany({
+    include: { ...smrInclude, podObekt: { include: { project: true } } },
+  });
+}
+
 export async function updateSMRProgress(data: {
   smrId: string;
   podObektId: string;
@@ -174,4 +181,39 @@ export async function addBrigadeMember(data: {
 export async function removeBrigadeMember(id: string) {
   await prisma.brigadeMember.delete({ where: { id } });
   revalidatePath("/brigadi");
+}
+
+export async function createTask(data: CreateTaskData) {
+  const {
+    title,
+    description,
+    dueDate,
+    isAllDay,
+    priority,
+    project,
+    podObekt,
+    brigade,
+    brigadeMemberId,
+    smr,
+  } = data;
+
+  await prisma.task.create({
+    data: {
+      title,
+      status: "IN_PROGRESS",
+      priority,
+      isAllDay,
+      dueDate,
+      description,
+      projectId: project?.id,
+      podObektId: podObekt?.id,
+      brigadeId: brigade?.id,
+      brigadeMemberId: brigadeMemberId?.id,
+      smrId: smr?.id,
+    },
+  });
+}
+
+export async function getTasks() {
+  return prisma.task.findMany();
 }
