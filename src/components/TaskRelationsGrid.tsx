@@ -1,16 +1,16 @@
 "use client";
 
+import { CreateTaskData } from "@/lib/types";
 import { Building2, Users, HardHat, ClipboardList, X } from "lucide-react";
-import type { TaskFormValues } from "./CreateTask";
 
 interface TaskRelationsGridProps {
-  form: TaskFormValues;
+  form: CreateTaskData;
   onOpenProjects: () => void;
   onOpenPodObekti: () => void;
   onOpenBrigades: () => void;
   onOpenBrigadeMembers: () => void;
   onOpenSMR?: () => void;
-  onRemove: (key: keyof TaskFormValues) => void;
+  onRemove: (key: keyof CreateTaskData) => void;
 }
 
 export default function TaskRelationsGrid({
@@ -24,28 +24,28 @@ export default function TaskRelationsGrid({
 }: TaskRelationsGridProps) {
   const relationFields = [
     {
-      key: "project" as keyof TaskFormValues,
+      key: "project" as keyof CreateTaskData,
       icon: Building2,
       selected: form.project,
       label: form.project ? form.project.name : "Избери проект",
       onClick: onOpenProjects,
     },
     {
-      key: "podObekt" as keyof TaskFormValues,
+      key: "podObekt" as keyof CreateTaskData,
       icon: Building2,
       selected: form.podObekt,
       label: form.podObekt ? form.podObekt.name : "Избери подобект",
       onClick: onOpenPodObekti,
     },
     {
-      key: "brigade" as keyof TaskFormValues,
+      key: "brigade" as keyof CreateTaskData,
       icon: Users,
       selected: form.brigade,
       label: form.brigade ? form.brigade.name : "Избери бригада",
       onClick: onOpenBrigades,
     },
     {
-      key: "brigadeMemberId" as keyof TaskFormValues,
+      key: "brigadeMemberId" as keyof CreateTaskData,
       icon: HardHat,
       selected: form.brigadeMemberId,
       label: form.brigadeMemberId
@@ -54,7 +54,7 @@ export default function TaskRelationsGrid({
       onClick: onOpenBrigadeMembers,
     },
     {
-      key: "smr" as keyof TaskFormValues,
+      key: "smr" as keyof CreateTaskData,
       icon: ClipboardList,
       selected: form.smr,
       label: form.smr ? form.smr.name : "Избери СМР",
