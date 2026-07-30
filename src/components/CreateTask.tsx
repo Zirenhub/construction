@@ -42,10 +42,8 @@ type TOpenModal =
   | "selectSMR";
 
 export default function CreateTask({
-  goBack,
   onSaveAction,
 }: {
-  goBack: () => void;
   onSaveAction?: (taskData: CreateTaskData) => Promise<void> | void;
 }) {
   const [form, setForm] = useState<CreateTaskData>(emptyTask);
@@ -67,7 +65,6 @@ export default function CreateTask({
 
     startTransition(async () => {
       if (onSaveAction) await onSaveAction(form);
-      goBack();
     });
   }
 
@@ -109,21 +106,7 @@ export default function CreateTask({
   };
 
   return (
-    <div className="w-full max-w-lg">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <button
-          onClick={goBack}
-          type="button"
-          className="p-1.5 rounded-lg text-ink-4 hover:text-ink hover:bg-lift transition-colors"
-        >
-          <ArrowLeftCircleIcon size={24} />
-        </button>
-        <h2 className="text-lg font-semibold text-ink tracking-tight">
-          Създаване на нова задача
-        </h2>
-      </div>
-
+    <>
       <div className="space-y-4">
         {/* Title & Description */}
         <section className="space-y-3">
@@ -310,6 +293,8 @@ export default function CreateTask({
         brigades={brigades}
         selectedMemberId={form.brigadeMemberId?.id}
         selectedBrigade={form.brigade}
+        selectedProject={form.project}
+        selectedPodObekt={form.podObekt}
         onClose={() => setOpenModal("none")}
         onSelect={(member, parentBrigade) => {
           setForm((prev) => ({
@@ -335,6 +320,6 @@ export default function CreateTask({
         }}
         onClose={() => setOpenModal("none")}
       />
-    </div>
+    </>
   );
 }

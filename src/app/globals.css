@@ -1,76 +1,76 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-/* Class-based dark mode: applies dark: variant when .dark is on an ancestor */
-@variant dark (&:where(.dark, .dark *));
+/* Modern class-based dark mode variant */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ── Light mode (default) ──────────────────────────────────── */
 :root {
-  --canvas:       #ffffff;        /* page background              */
-  --surface:      #fafafa;        /* cards, panels, sidebar       */
-  --well:         #ffffff;        /* inputs sitting on surface    */
-  --lift:         #f4f4f5;        /* hover / elevated items       */
+  --canvas: #f8fafc;
+  --surface: #ffffff;
+  --well: #f1f5f9;
+  --lift: #e2e8f0;
 
-  --line:         #e4e4e7;        /* default borders              */
-  --line-2:       #d4d4d8;        /* strong borders               */
-  --line-3:       #71717a;        /* focus / active borders       */
+  --line: #cbd5e1;
+  --line-2: #94a3b8;
+  --line-3: #6366f1;
 
-  --ink:          #18181b;        /* primary text                 */
-  --ink-2:        #3f3f46;        /* secondary text               */
-  --ink-3:        #52525b;        /* muted text                   */
-  --ink-4:        #71717a;        /* subtle text                  */
-  --ink-5:        #a1a1aa;        /* faint text                   */
-  --ink-ghost:    #d4d4d8;        /* decorative / separators      */
+  --ink: #0f172a;
+  --ink-2: #334155;
+  --ink-3: #475569;
+  --ink-4: #64748b;
+  --ink-5: #94a3b8;
+  --ink-ghost: #e2e8f0;
 
-  --cta:          #18181b;        /* CTA button background        */
-  --cta-fg:       #ffffff;        /* CTA button text              */
-  --cta-hover:    #3f3f46;        /* CTA button hover background  */
+  --cta: #6366f1;
+  --cta-fg: #ffffff;
+  --cta-hover: #4f46e5;
 }
 
 /* ── Dark mode ─────────────────────────────────────────────── */
 .dark {
-  --canvas:       #09090b;        /* zinc-950                     */
-  --surface:      #18181b;        /* zinc-900                     */
-  --well:         #09090b;        /* zinc-950                     */
-  --lift:         #27272a;        /* zinc-800                     */
+  --canvas: #030712;
+  --surface: #0f172a;
+  --well: #020617;
+  --lift: #1e293b;
 
-  --line:         #27272a;        /* zinc-800                     */
-  --line-2:       #3f3f46;        /* zinc-700                     */
-  --line-3:       #52525b;        /* zinc-600                     */
+  --line: #1e293b;
+  --line-2: #334155;
+  --line-3: #818cf8;
 
-  --ink:          #f4f4f5;        /* zinc-100                     */
-  --ink-2:        #d4d4d8;        /* zinc-300                     */
-  --ink-3:        #a1a1aa;        /* zinc-400                     */
-  --ink-4:        #71717a;        /* zinc-500                     */
-  --ink-5:        #52525b;        /* zinc-600                     */
-  --ink-ghost:    #3f3f46;        /* zinc-700                     */
+  --ink: #f8fafc;
+  --ink-2: #e2e8f0;
+  --ink-3: #cbd5e1;
+  --ink-4: #94a3b8;
+  --ink-5: #64748b;
+  --ink-ghost: #1e293b;
 
-  --cta:          #ffffff;        /* white button                 */
-  --cta-fg:       #09090b;        /* dark text on white button    */
-  --cta-hover:    #e4e4e7;        /* zinc-200                     */
+  --cta: #6366f1;
+  --cta-fg: #ffffff;
+  --cta-hover: #818cf8;
 }
 
 @theme inline {
-  --color-canvas:    var(--canvas);
-  --color-surface:   var(--surface);
-  --color-well:      var(--well);
-  --color-lift:      var(--lift);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-well: var(--well);
+  --color-lift: var(--lift);
 
-  --color-line:      var(--line);
-  --color-line-2:    var(--line-2);
-  --color-line-3:    var(--line-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-line-3: var(--line-3);
 
-  --color-ink:       var(--ink);
-  --color-ink-2:     var(--ink-2);
-  --color-ink-3:     var(--ink-3);
-  --color-ink-4:     var(--ink-4);
-  --color-ink-5:     var(--ink-5);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-ink-5: var(--ink-5);
   --color-ink-ghost: var(--ink-ghost);
 
-  --color-cta:       var(--cta);
-  --color-cta-fg:    var(--cta-fg);
+  --color-cta: var(--cta);
+  --color-cta-fg: var(--cta-fg);
   --color-cta-hover: var(--cta-hover);
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --font-sans: var(--font-sans);
 }

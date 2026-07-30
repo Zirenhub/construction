@@ -4,7 +4,10 @@ import { useState } from "react";
 import { Plus, CheckSquare } from "lucide-react";
 import CreateTask from "./CreateTask";
 import { CreateTaskData } from "@/lib/types";
-import { createTask } from "@/lib/actions";
+import { createTask, getTasks } from "@/lib/actions";
+import TasksLayoutHeader from "./TasksLayoutHeader";
+import { Task } from "@/generated/prisma/client";
+import TaskContainer from "./TaskContainer";
 
 type ActiveView = "layout" | "tasks" | "create" | "none";
 type LayoutProps = {
@@ -27,7 +30,7 @@ function InitialLayout({ openTasks, openCreate }: LayoutProps) {
   return (
     <>
       {/* Header */}
-      <div className="flex items-start justify-between mb-5">
+      <div className="flex items-start justify-between mb-5 gap-3">
         <div>
           <h2 className="text-lg font-semibold text-ink tracking-tight">
             Задачи
@@ -77,6 +80,7 @@ function InitialLayout({ openTasks, openCreate }: LayoutProps) {
 
 export function Tasks() {
   const [view, setView] = useState<ActiveView>("none");
+  const [tasks, setTasks] = useState<Task[]>([]);
   const newTasksCount = 3; // placeholder
 
   const handleOpenCloseLogic = () => {
@@ -92,17 +96,20 @@ export function Tasks() {
     setView("create");
   };
 
-  const openTasks = (e: React.MouseEvent) => {
+  const openTasks = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    const tasks = await getTasks();
+    setTasks(tasks);
     setView("tasks");
   };
 
   const handleSaveAction = async (data: CreateTaskData) => {
     await createTask(data);
+    setView("none");
   };
 
   return (
-    <div className="z-40 fixed bottom-18 right-4 md:bottom-3">
+    <div className="z-40 fixed bottom-18 right-4 md:bottom-3 text-nowrap">
       {/* Floating button */}
       <button
         onClick={handleOpenCloseLogic}
@@ -125,7 +132,7 @@ export function Tasks() {
         <div
           className="
             absolute bottom-20 right-0 
-            w-[calc(100vw-3rem)] sm:w-80 max-w-[calc(100vw-2rem)]
+            min-w-[30%] max-w-lg w-fit
             max-h-[calc(100vh-8rem)] 
             overflow-y-auto
             rounded-2xl bg-surface border border-line 
@@ -137,10 +144,22 @@ export function Tasks() {
             <InitialLayout openTasks={openTasks} openCreate={openCreate} />
           )}
           {view === "create" && (
-            <CreateTask
-              goBack={() => setView("layout")}
-              onSaveAction={(data) => handleSaveAction(data)}
-            />
+            <>
+              <TasksLayoutHeader
+                goBack={() => setView("layout")}
+                title="Създаване на нова задача"
+              />
+              <CreateTask onSaveAction={(data) => handleSaveAction(data)} />
+            </>
+          )}
+          {view === "tasks" && (
+            <>
+              <TasksLayoutHeader
+                goBack={() => setView("layout")}
+                title="Всички задачи"
+              />
+              <TaskContainer initialTasks={tasks} />
+            </>
           )}
         </div>
       )}

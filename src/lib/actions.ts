@@ -215,5 +215,16 @@ export async function createTask(data: CreateTaskData) {
 }
 
 export async function getTasks() {
-  return prisma.task.findMany();
+  return prisma.task.findMany({
+    include: {
+      project: true,
+      podObekt: true,
+      brigade: true,
+      brigadeMember: true,
+      smr: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 }

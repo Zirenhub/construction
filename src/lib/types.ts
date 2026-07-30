@@ -6,6 +6,7 @@ import type {
   SMR,
   SMRNote,
   SMRUpdate,
+  Task,
 } from "@/generated/prisma/client";
 
 export type SmrFormData = {
@@ -68,3 +69,27 @@ export type CreateTaskData = {
   brigadeMemberId: BrigadeMember | null;
   smr: SMRWithAll | null;
 };
+
+export type TaskWithActions = Task & {
+  project?: {
+    name: string;
+  } | null;
+
+  podObekt?: {
+    name: string;
+  } | null;
+
+  brigade?: {
+    name: string;
+  } | null;
+
+  brigadeMember?: {
+    name: string;
+  } | null;
+
+  smr?: {
+    name: string;
+  } | null;
+};
+
+export type TaskAction = "complete" | "delete";

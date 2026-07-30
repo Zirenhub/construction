@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { BrigadeMember } from "@/generated/prisma/client";
-import { BrigadeWithAll } from "@/lib/types";
+import { BrigadeWithAll, ProjectWithRelations, TPodObekt } from "@/lib/types";
 import Modal from "./Modal";
 import SelectionCard from "./SelectionCard";
 
@@ -16,6 +16,8 @@ interface SelectBrigadeMemberModalProps {
   brigades: BrigadeWithAll[];
   selectedMemberId?: string | null;
   selectedBrigade: BrigadeWithAll | null;
+  selectedProject: ProjectWithRelations | null;
+  selectedPodObekt: TPodObekt | null;
   onClose: () => void;
   onSelect: (member: BrigadeMember, parentBrigade: BrigadeWithAll) => void;
 }
@@ -25,6 +27,8 @@ export default function SelectBrigadeMemberModal({
   isLoading,
   brigades,
   selectedMemberId,
+  selectedPodObekt,
+  selectedProject,
   selectedBrigade,
   onClose,
   onSelect,
@@ -72,6 +76,19 @@ export default function SelectBrigadeMemberModal({
             const isFromSelectedBrigade =
               selectedBrigade?.id && member.brigadeId === selectedBrigade.id;
             const parentBrigade = brigadeMap.get(member.id)!;
+            const isActiveInPodObekt =
+              selectedPodObekt?.id &&
+              selectedBrigade?.smr.some(
+                (s) => s.podObektId === selectedPodObekt.id,
+              );
+            const isActiveInProject =
+              selectedProject?.id &&
+              selectedProject.podObekti?.some((o) =>
+                o.smr?.some((s) => s.brigadeId === selectedBrigade?.id),
+              );
+
+            // &&
+            // member.brigadeId === selectedBrigade?.id;
 
             return (
               <SelectionCard
@@ -86,11 +103,14 @@ export default function SelectBrigadeMemberModal({
                 selected={selectedMemberId === member.id}
                 onSelect={(m) => onSelect(m, parentBrigade)}
                 meta={
-                  isFromSelectedBrigade ? (
-                    <span className="text-[11px] font-medium text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-md shrink-0">
-                      от {member.brigadeName}
-                    </span>
-                  ) : null
+                  <>
+                    {isFromSelectedBrigade && (
+                      <span className="text-[11px] font-medium text-green-600 dark:text-green-400 bg-green-500/10 px-2 py-0.5 rounded-md shrink-0">
+                        от {member.brigadeName}
+                      </span>
+                    )}
+                    {/* {isActiveInProject && <p>yashaa</p>} */}
+                  </>
                 }
               />
             );
