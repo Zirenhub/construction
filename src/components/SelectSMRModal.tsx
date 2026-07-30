@@ -1,6 +1,6 @@
 import { SMRWithAll } from "@/lib/types";
 import Modal from "./Modal";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SelectionCard from "./SelectionCard";
 
 interface SelectSMRModalProps {
@@ -22,6 +22,24 @@ export default function SelectSMRModal({
 }: SelectSMRModalProps) {
   const [notesOpen, setNotesOpen] = useState<boolean>(false);
 
+  const sortedSmrs = useMemo(() => {
+    return [...smrs].sort((a, b) => {
+      const projectA = a.podObekt.project.name.toLowerCase();
+      const projectB = b.podObekt.project.name.toLowerCase();
+
+      if (projectA < projectB) return -1;
+      if (projectA > projectB) return 1;
+
+      const podObektA = a.podObekt.name.toLowerCase();
+      const podObektB = b.podObekt.name.toLowerCase();
+
+      if (podObektA < podObektB) return -1;
+      if (podObektA > podObektB) return 1;
+
+      return 0;
+    });
+  }, [smrs]);
+
   return (
     <Modal
       isLoading={isLoading}
@@ -30,13 +48,13 @@ export default function SelectSMRModal({
       isOpen={isOpen}
     >
       <div className="flex flex-col gap-2 max-h-[60vh] overflow-y-auto pr-1">
-        {smrs.length === 0 ? (
+        {sortedSmrs.length === 0 ? (
           <div className="py-8 text-center border border-dashed border-line rounded-xl">
             <p className="text-xs text-ink-4">Няма намерени</p>
           </div>
         ) : (
           <>
-            {smrs.map((s) => {
+            {sortedSmrs.map((s) => {
               return (
                 <SelectionCard
                   key={s.id}
