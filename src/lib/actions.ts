@@ -212,6 +212,8 @@ export async function createTask(data: CreateTaskData) {
       smrId: smr?.id,
     },
   });
+
+  revalidatePath("/");
 }
 
 export async function getTasks() {
