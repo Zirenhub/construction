@@ -27,14 +27,14 @@ export default function SelectSMRModal({
       const projectA = a.podObekt.project.name.toLowerCase();
       const projectB = b.podObekt.project.name.toLowerCase();
 
-      if (projectA < projectB) return -1;
-      if (projectA > projectB) return 1;
+      if (projectA < projectB) return 1;
+      if (projectA > projectB) return -1;
 
       const podObektA = a.podObekt.name.toLowerCase();
       const podObektB = b.podObekt.name.toLowerCase();
 
-      if (podObektA < podObektB) return -1;
-      if (podObektA > podObektB) return 1;
+      if (podObektA < podObektB) return 1;
+      if (podObektA > podObektB) return -1;
 
       return 0;
     });
