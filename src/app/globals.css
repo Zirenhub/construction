@@ -5,10 +5,10 @@
 
 /* ── Light mode (default) ──────────────────────────────────── */
 :root {
-  --canvas: #f8fafc;
-  --surface: #ffffff;
-  --well: #f1f5f9;
-  --lift: #e2e8f0;
+  --canvas: #f8fafc; /* Main background */
+  --surface: #ffffff; /* Cards / Containers */
+  --well: #f1f5f9; /* Recessed areas */
+  --lift: #edf2f7; /* A light, muted tint specifically balanced for backgrounds */
 
   --line: #cbd5e1;
   --line-2: #94a3b8;
