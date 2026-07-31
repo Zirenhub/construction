@@ -27,10 +27,10 @@ export default function TaskRow({ task, onComplete, onDelete }: Props) {
     >
       <TaskPriority priority={task.priority} />
 
-      <div className="flex-1 min-w-0">
+      <div className="mb-auto flex-1 min-w-0">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <h3 className="truncate text-base font-semibold tracking-tight text-ink-1">
+            <h3 className="truncate text-base font-medium tracking-tight text-ink-1 leading-none">
               {task.title}
             </h3>
 
@@ -41,18 +41,16 @@ export default function TaskRow({ task, onComplete, onDelete }: Props) {
             )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <TaskStatus status={task.status} />
-
-            <TaskActions
-              task={task}
-              onComplete={onComplete}
-              onDelete={onDelete}
-            />
-          </div>
+          <TaskActions
+            task={task}
+            onComplete={onComplete}
+            onDelete={onDelete}
+          />
         </div>
-
-        <TaskMeta task={task} />
+        <div className="flex justify-between items-center mt-3">
+          <TaskMeta task={task} />
+          <TaskStatus status={task.status} />
+        </div>
       </div>
     </div>
   );

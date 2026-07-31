@@ -37,12 +37,13 @@ export default function TaskFilters({ value, onChange }: Props) {
   return (
     <div
       className="
-        flex
-        flex-wrap
+        grid
+        grid-cols-3
         gap-1
         rounded-xl
-        bg-lift
+        bg-surface
         p-1
+        shadow-sm
       "
     >
       {filters.map((filter) => (
@@ -55,11 +56,10 @@ export default function TaskFilters({ value, onChange }: Props) {
             py-1.5
             text-sm
             transition
-
             ${
               value === filter.value
-                ? "bg-accent text-white"
-                : "text-ink-3 hover:bg-surface"
+                ? "bg-accent text-ink-5"
+                : "text-ink-3 hover:bg-well"
             }
           `}
         >

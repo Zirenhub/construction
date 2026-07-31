@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 
 type Props = {
   value: string;
@@ -12,19 +12,19 @@ export default function TaskSearch({ value, onChange }: Props) {
         flex
         h-10
         items-center
+        bg-surface
         gap-2
         rounded-xl
-        bg-lift
         px-3
         text-ink-3
+        shadow-sm
       "
     >
-      <Search className="h-4 w-4" />
+      <Search size={18} color="#64748b" className="m-2" />
 
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Search tasks..."
         className="
           w-full
           bg-transparent
@@ -34,6 +34,10 @@ export default function TaskSearch({ value, onChange }: Props) {
           placeholder:text-ink-3
         "
       />
+
+      <button className="cursor-pointer text-ink-5 rounded-full p-1 hover:bg-red-400 hover:text-surface transition-colors">
+        <Trash2 size={18} />
+      </button>
     </div>
   );
 }

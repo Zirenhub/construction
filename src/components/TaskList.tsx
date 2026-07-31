@@ -14,7 +14,7 @@ export default function TaskList({ tasks, onComplete, onDelete }: Props) {
   }
 
   return (
-    <div className="flex flex-col divide-y divide-border overflow-hidden rounded-2xl bg-lift">
+    <div className="flex flex-col divide-y divide-border overflow-hidden rounded-2xl bg-surface shadow-sm">
       {tasks.map((task) => (
         <TaskRow
           key={task.id}

@@ -117,9 +117,7 @@ export default function TaskContainer({ initialTasks }: Props) {
           flex
           flex-col
           gap-3
-          lg:flex-row
-          lg:items-center
-          lg:justify-between
+          font-light
         "
       >
         <TaskSearch value={search} onChange={setSearch} />

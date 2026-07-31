@@ -28,9 +28,8 @@ export default function TaskActions({ task, onComplete, onDelete }: Props) {
             justify-center
             rounded-lg
             text-ink-3
-            opacity-0
             transition
-            hover:bg-surface
+            hover:bg-lift
             group-hover:opacity-100
           "
         >

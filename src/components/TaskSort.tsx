@@ -35,10 +35,12 @@ export default function TaskSort({ value, onChange }: Props) {
       className="
         flex
         items-center
+        justify-between
         gap-1
         rounded-xl
-        bg-lift
+        bg-surface
         p-1
+        shadow-sm
       "
     >
       {options.map((item) => {
@@ -60,8 +62,8 @@ export default function TaskSort({ value, onChange }: Props) {
 
               ${
                 value === item.value
-                  ? "bg-accent text-white"
-                  : "text-ink-3 hover:bg-surface"
+                  ? "bg-accent text-ink-5"
+                  : "text-ink-3 hover:bg-well"
               }
             `}
           >

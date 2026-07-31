@@ -1,4 +1,4 @@
-import type {
+import {
   Brigade,
   BrigadeMember,
   PodObekt,
@@ -7,7 +7,10 @@ import type {
   SMRNote,
   SMRUpdate,
   Task,
+  TaskStatus,
 } from "@/generated/prisma/client";
+
+export { TaskStatus };
 
 export type SmrFormData = {
   name: string;

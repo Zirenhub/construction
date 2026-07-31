@@ -1,11 +1,10 @@
+import { TaskStatus as PrismaTaskStatus } from "@/lib/types";
 import {
   CheckCircle2,
   CircleDashed,
   LoaderCircle,
   XCircle,
 } from "lucide-react";
-
-import { TaskStatus as PrismaTaskStatus } from "@/generated/prisma/client";
 
 type Props = {
   status: PrismaTaskStatus;
@@ -47,6 +46,7 @@ export default function TaskStatus({ status }: Props) {
     <div
       className="
         flex
+        flex-nowrap
         items-center
         gap-1.5
         whitespace-nowrap

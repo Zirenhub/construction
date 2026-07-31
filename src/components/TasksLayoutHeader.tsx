@@ -7,11 +7,11 @@ type Props = {
 
 export default function TasksLayoutHeader({ title, goBack }: Props) {
   return (
-    <div className="flex items-center gap-1 mb-3 text-sm">
+    <div className="flex items-center gap-2 mb-3 text-sm">
       <button
         onClick={goBack}
         type="button"
-        className="p-1.5 rounded-lg text-ink-4 hover:text-ink hover:bg-lift transition-colors"
+        className="rounded-lg text-ink-4 hover:text-ink hover:bg-lift transition-colors cursor-pointer"
       >
         <ArrowLeftCircleIcon size={24} />
       </button>

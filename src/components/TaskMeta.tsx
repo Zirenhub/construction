@@ -17,7 +17,6 @@ export default function TaskMeta({ task }: Props) {
   return (
     <div
       className="
-        mt-4
         flex
         flex-wrap
         items-center

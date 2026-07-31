@@ -19,9 +19,9 @@ export const DropdownMenuContent = React.forwardRef<
    min-w-[8rem]
    overflow-hidden
    rounded-xl
-   border
-   border-border
-   bg-lift
+   border-2
+   border-well
+   bg-surface
    p-1
    shadow-xl
    animate-in
@@ -52,7 +52,7 @@ export const DropdownMenuItem = React.forwardRef<
    text-sm
    outline-none
    transition
-   focus:bg-surface
+   focus:bg-well/60
    ${className ?? ""}
  `}
     {...props}

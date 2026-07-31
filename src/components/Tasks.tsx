@@ -131,11 +131,12 @@ export function Tasks() {
       {view !== "none" && (
         <div
           className="
+          bg-canvas
             absolute bottom-20 right-0 
             min-w-[30%] max-w-lg w-fit
             max-h-[calc(100vh-8rem)] 
             overflow-y-auto
-            rounded-2xl bg-surface border border-line 
+            rounded-2xl border border-line 
             shadow-2xl shadow-black/15 p-3
             animate-in fade-in slide-in-from-bottom-2 duration-200
           "
