@@ -233,3 +233,16 @@ export async function getTasks() {
     },
   });
 }
+
+export async function completeTask(id: string) {
+  await prisma.task.update({
+    where: {
+      id,
+    },
+    data: {
+      status: "COMPLETED",
+    },
+  });
+
+  revalidatePath("/");
+}

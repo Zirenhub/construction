@@ -9,6 +9,7 @@ import { TaskWithActions } from "@/lib/types";
 import TaskSearch from "./TaskSearch";
 import TaskFilters from "./TaskFilters";
 import TaskList from "./TaskList";
+import { completeTask } from "@/lib/actions";
 
 type Props = {
   initialTasks: TaskWithActions[];
@@ -71,19 +72,7 @@ export default function TaskContainer({ initialTasks }: Props) {
   }, [tasks, search, filter, sort]);
 
   async function markComplete(id: string) {
-    /*
-      Prisma action:
-
-      await prisma.task.update({
-        where:{
-          id
-        },
-        data:{
-          status:"COMPLETED"
-        }
-      })
-    */
-
+    await completeTask(id);
     setTasks((prev) =>
       prev.map((task) =>
         task.id === id
@@ -120,7 +109,11 @@ export default function TaskContainer({ initialTasks }: Props) {
           font-light
         "
       >
-        <TaskSearch value={search} onChange={setSearch} />
+        <TaskSearch
+          value={search}
+          onChange={setSearch}
+          clearSearch={() => setSearch("")}
+        />
 
         <TaskSort value={sort} onChange={setSort} />
       </div>

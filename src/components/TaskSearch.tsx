@@ -3,9 +3,10 @@ import { Search, Trash2 } from "lucide-react";
 type Props = {
   value: string;
   onChange: (value: string) => void;
+  clearSearch: () => void;
 };
 
-export default function TaskSearch({ value, onChange }: Props) {
+export default function TaskSearch({ value, onChange, clearSearch }: Props) {
   return (
     <div
       className="
@@ -35,7 +36,10 @@ export default function TaskSearch({ value, onChange }: Props) {
         "
       />
 
-      <button className="cursor-pointer text-ink-5 rounded-full p-1 hover:bg-red-400 hover:text-surface transition-colors">
+      <button
+        onClick={clearSearch}
+        className="cursor-pointer text-ink-5 rounded-full p-1 hover:bg-red-400 hover:text-surface transition-colors"
+      >
         <Trash2 size={18} />
       </button>
     </div>
