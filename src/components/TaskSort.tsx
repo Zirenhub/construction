@@ -39,7 +39,8 @@ export default function TaskSort({ value, onChange }: Props) {
         gap-1
         rounded-xl
         bg-surface
-        p-1
+        p-3
+        min-w-fit
         shadow-sm
       "
     >

@@ -350,9 +350,6 @@ export default function Calendar({ tasks }: Props) {
         {selectedDayTasks.length > 0 ? (
           <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
             {selectedDayTasks.map((task) => {
-              // Calculate SMR progress percentage if SMR relation exists
-              const smrProgress = task.smr ? smrPct(task.smr) : null;
-
               return (
                 <div
                   key={task.id}
@@ -425,7 +422,6 @@ export default function Calendar({ tasks }: Props) {
                     )}
                   </div>
 
-                  {/* SMR Progress Bar */}
                   {/* SMR Progress Bar */}
                   {task.smr && (
                     <div className="space-y-1 pt-1">

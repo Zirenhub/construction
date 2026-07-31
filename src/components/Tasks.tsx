@@ -133,7 +133,7 @@ export function Tasks() {
           className="
           bg-canvas
             absolute bottom-20 right-0 
-            min-w-[30%] max-w-lg w-fit
+            min-w-[30%] lg:w-[410px]
             max-h-[calc(100vh-8rem)] 
             overflow-y-auto
             rounded-2xl border border-line 
