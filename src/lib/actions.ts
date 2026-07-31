@@ -197,13 +197,15 @@ export async function createTask(data: CreateTaskData) {
     smr,
   } = data;
 
+  const date = dueDate === "" ? new Date().toISOString() : dueDate;
+
   await prisma.task.create({
     data: {
       title,
       status: "IN_PROGRESS",
       priority,
       isAllDay,
-      dueDate,
+      dueDate: date,
       description,
       projectId: project?.id,
       podObektId: podObekt?.id,

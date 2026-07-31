@@ -9,6 +9,7 @@ import {
   Task,
   TaskStatus,
 } from "@/generated/prisma/client";
+import { getTasks } from "./actions";
 
 export { TaskStatus };
 
@@ -96,3 +97,6 @@ export type TaskWithActions = Task & {
 };
 
 export type TaskAction = "complete" | "delete";
+
+export type GetTasksResult = Awaited<ReturnType<typeof getTasks>>;
+export type TaskWithRelations = GetTasksResult[number];

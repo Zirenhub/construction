@@ -9,6 +9,7 @@ import { SmrProgress } from "./SmrProgress";
 import { SmrMetaGrid } from "./SmrMetaGrid";
 import { SmrHistory } from "./SmrHistory";
 import { SmrUpdateForm } from "./SmrUpdateForm";
+import smrPct from "@/helpers/smrPct";
 
 type Props = {
   smr: SMRWithUpdates;
@@ -40,8 +41,7 @@ export default function SmrCard({
     handleTogglePaid,
   } = useSmrActions(initialSmr, { onUpdateAction, onTogglePaidAction });
 
-  const pct =
-    smr.quantity > 0 ? Math.round((smr.done / smr.quantity) * 100) : 0;
+  const pct = smrPct(smr);
   const earned = smr.pricePerUnit * smr.done;
 
   return (
